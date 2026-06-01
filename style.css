@@ -1,0 +1,213 @@
+/* --- 基礎設定 --- */
+:root {
+  --bg-color: #0a0a12;
+  --panel-bg: #14141f;
+  --text-color: #e0e0e0;
+  --cyan: #00ffff;
+  --pink: #ff00ff;
+  --yellow: #ffff00;
+  --border-color: #333;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Courier New', Courier, monospace; /* 使用等寬字體增加科技感 */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  width: 90%;
+  max-width: 1200px;
+  background-color: var(--panel-bg);
+  border: 2px solid var(--border-color);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 頁首 --- */
+header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid var(--border-color);
+}
+
+header h1 {
+  margin: 0;
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan);
+  font-size: 2rem;
+}
+
+header p {
+  margin: 5px 0 0;
+  color: #888;
+}
+
+/* --- 主要內容區域 --- */
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* --- 左側預覽區域 --- */
+.preview-area {
+  flex: 1 1 60%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid var(--border-color);
+  position: relative;
+}
+
+#canvas {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  border: 4px solid #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.status-bar {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: var(--pink);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* --- 右側控制面板 --- */
+.controls-panel {
+  flex: 1 1 35%;
+  padding: 20px;
+  background-color: #0d0d17;
+}
+
+.control-section {
+  margin-bottom: 30px;
+}
+
+.control-section h3 {
+  color: var(--yellow);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-top: 0;
+}
+
+/* 濾鏡按鈕 */
+.filter-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.filter-btn {
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  background-color: var(--cyan);
+  color: #000;
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+/* 文字輸入 */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  background-color: #000;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-family: inherit;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 5px var(--pink);
+}
+
+/* 行動按鈕 */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+#snap, .download-btn {
+  flex: 1;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+#snap {
+  background-color: var(--pink);
+  color: white;
+}
+
+#snap:hover {
+  background-color: #ff33ff;
+  box-shadow: 0 0 15px var(--pink);
+}
+
+.download-btn {
+  background-color: #333;
+  color: #888;
+  pointer-events: none; /* 預設禁用 */
+}
+
+.download-btn.enabled {
+  background-color: var(--cyan);
+  color: black;
+  pointer-events: auto; /* 啟用 */
+}
+
+.download-btn.enabled:hover {
+  background-color: #33ffff;
+  box-shadow: 0 0 15px var(--cyan);
+}
+
+/* 手機版適配 */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+  .preview-area {
+    border-right: none;
+    border-bottom: 2px solid var(--border-color);
+  }
+}

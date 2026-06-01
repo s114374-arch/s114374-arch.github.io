@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Booth 2049 - 濾鏡製造機</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="icon.png">
+  </head>
+  <body>
+
+    <div class="app-container">
+      <header>
+        <h1>🤖 CYBER BOOTH 2049</h1>
+        <p>你的專屬濾鏡與梗圖照相館</p>
+      </header>
+
+      <div class="main-content">
+        <div class="preview-area">
+          <video id="video" autoplay playsinline style="display:none;"></video>
+          <canvas id="canvas"></canvas>
+          <div class="status-bar">STATUS: ON-AIR</div>
+        </div>
+
+        <aside class="controls-panel">
+          
+          <section class="control-section">
+            <h3>🛸 1. 選擇即時濾鏡</h3>
+            <div class="filter-buttons">
+              <button class="filter-btn active" data-filter="none">原圖 Normal</button>
+              <button class="filter-btn" data-filter="retro-bw">復古黑白 B&W</button>
+              <button class="filter-btn" data-filter="cyber-neon">賽博霓虹 Neon</button>
+              <button class="filter-btn" data-filter="jpop-soft">日系小清新 Soft</button>
+            </div>
+          </section>
+
+          <section class="control-section">
+            <h3>✍️ 2. 添加迷因文字</h3>
+            <div class="input-group">
+              <label>頂部文字 (TOP)</label>
+              <input type="text" id="topText" placeholder="輸入頂部文字...">
+            </div>
+            <div class="input-group">
+              <label>底部文字 (BOTTOM)</label>
+              <input type="text" id="bottomText" placeholder="輸入底部文字...">
+            </div>
+          </section>
+
+          <section class="control-section action-section">
+            <h3>📸 3. 捕捉與保存</h3>
+            <div class="action-buttons">
+              <button id="snap">TAKE PHOTO</button>
+              <a id="download" class="download-btn disabled" download="cyber-photo.png">SAVE IMAGE</a>
+            </div>
+          </section>
+
+        </aside>
+      </div>
+
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
