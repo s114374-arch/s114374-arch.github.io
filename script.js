@@ -44,44 +44,46 @@ async function initCamera() {
   }
 }
 
-/* --- 3. 核心繪圖循環：將視訊畫到畫布上 --- */
+/* --- 3. 核心繪圖循環：將視訊畫到畫布上 (已修正濾鏡與變形問題) --- */
 function drawFrame() {
-  // 3a. 繪製原始視訊幀
+  // 動態調整畫布的內部解析度，使其完美符合視訊鏡頭的實際比例，防止臉部變形
+  if (video.videoWidth && (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight)) {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+  }
+
   ctx.save(); // 保存當前狀態
+  
+  // 【關鍵修正】必須在繪製（drawImage）之前，就先把濾鏡準備好！
+  setCanvasFilter(ctx);
+  
+  // 繪製視訊幀（此時濾鏡會直接套用到這張圖上）
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
-  // 3b. 應用 CSS 濾鏡特效
-  applyFilterEffects(ctx);
-  
-  // 3c. 繪製迷因文字
-  drawMemeText(ctx);
-  
-  ctx.restore(); // 恢復狀態
+  ctx.restore(); // 恢復狀態（清除濾鏡，避免影響到後面的文字）
 
-  // 使用 requestAnimationFrame 實時重複繪製 (約每秒 60 次)
+  // 繪製迷因文字（文字不需要套用濾鏡，所以放在 restore 後面）
+  drawMemeText(ctx);
+
+  // 使用 requestAnimationFrame 實時重複繪製
   requestAnimationFrame(drawFrame);
 }
 
-/* --- 4. 功能：應用 CSS 濾鏡 --- */
-function applyFilterEffects(context) {
-  // 利用 Canvas 的 filter 屬性，這跟 CSS 的 filter 是一樣的
+/* --- 4. 功能：設定濾鏡 (已修正純設定、不重疊繪製) --- */
+function setCanvasFilter(context) {
   switch (currentFilter) {
     case 'retro-bw':
       context.filter = 'grayscale(100%) contrast(150%) sepia(20%)';
       break;
     case 'cyber-neon':
-      // 賽博龐克風格：高飽和度、色相旋轉、銳利化
       context.filter = 'saturate(200%) hue-rotate(-20deg) contrast(120%)';
       break;
     case 'jpop-soft':
-      // 日系清新：低對比、輕微模糊、高亮度
-      context.filter = 'contrast(80%) brightness(120%) blur(0.5px) sepia(10%)';
+      context.filter = 'contrast(80%) brightness(120%) sepia(10%)';
       break;
     default:
       context.filter = 'none'; // 原圖
   }
-  // 注意：Canvas 的 filter 需要重新繪製一次影像才會生效
-  context.drawImage(canvas, 0, 0); 
 }
 
 /* --- 5. 功能：繪製迷因文字 --- */
