@@ -7,58 +7,46 @@
   
   <style>
     /* ==========================================
-       🧱 1. 空間透視與環境基礎設定
+       🧱 1. 全螢幕滿版與空間透視設定
        ========================================== */
-    body {
+    * {
+      box-sizing: border-box;
+    }
+    
+    body, html {
       margin: 0; padding: 0;
-      background-color: #ede6dc; /* 溫暖的繪本感底色 */
-      font-family: 'Microsoft JhengHei', sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #4a3e3d;
-      overflow: hidden;
+      width: 100%; height: 100%;
+      overflow: hidden; /* 禁止捲軸，讓空間完美鎖定在螢幕內 */
+      font-family: 'Microsoft JhengHei', -apple-system, sans-serif;
+      background-color: #ede6dc;
     }
 
-    /* 遊戲主舞台：呈現你草稿中的立體房間角落 */
+    /* 🎮 全螢幕遊戲舞台：徹底拿掉框框，佔滿整個螢幕 */
     .game-stage {
       position: relative;
-      width: 95%;
-      max-width: 800px;
-      height: 500px;
-      background-color: #f7f3ed;
-      border: 5px solid #4a3e3d;
-      border-radius: 28px;
-      box-shadow: 0 25px 60px rgba(74, 62, 61, 0.2);
-      overflow: hidden;
-    }
-
-    /* 3D 房間容器 */
-    .room-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
     }
 
     /* ==========================================
-       🌅 左側牆面層：有深度的窗戶、天色與黃色窗台
+       🌅 左側牆面空間 (佔螢幕 65% 寬度)
        ========================================== */
     .left-wall {
-      position: absolute;
-      top: 0; left: 0;
-      width: 65%; height: 100%;
-      border-right: 3px solid rgba(74, 62, 61, 0.15); /* 牆角陰影線 */
-      box-sizing: border-box;
+      position: relative;
+      width: 65%;
+      height: 100%;
+      background-color: #f7f3ed; /* 左牆壁顏色 */
+      border-right: 4px solid #4a3e3d; /* 牆角透視交界線 */
     }
 
-    /* 窗外動態天色 (z-index: 1) */
+    /* 滿版大窗戶 */
     .window-view {
       position: absolute;
-      top: 10%; left: 10%; width: 80%; height: 50%;
-      border: 4px solid #4a3e3d;
-      border-radius: 12px;
+      top: 8%; left: 8%;
+      width: 84%; height: 55%;
+      border: 5px solid #4a3e3d;
+      border-radius: 16px;
       overflow: hidden;
       background: linear-gradient(to bottom, #9bc2ff, #ffffff);
       transition: background 3s ease;
@@ -69,144 +57,157 @@
       position: absolute;
       width: 100%; height: 100%;
       background-image: radial-gradient(circle, #fff 1.5px, transparent 1.5px);
-      background-size: 30px 30px;
+      background-size: 40px 40px;
       opacity: 0;
       transition: opacity 3s ease;
     }
 
-    /* 隨風飄動的透明窗簾圖片 (預設用占位圖，可換成你的手繪 PNG) */
+    /* 隨風飄動的透明細紗窗簾 */
     .curtain-asset {
       position: absolute;
-      top: 0; width: 30%; height: 100%;
-      background-color: rgba(255, 255, 255, 0.4);
-      border: 1px dashed #4a3e3d; /* 手繪風虛線邊框 */
+      top: 0; width: 28%; height: 100%;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-left: 2px dashed #4a3e3d;
+      border-right: 2px dashed #4a3e3d;
       transform-origin: top center;
       animation: windSway 6s ease-in-out infinite alternate;
     }
-    .curtain-left { left: 0; }
-    .curtain-right { right: 0; animation-delay: -3s; }
+    .curtain-left { left: 2%; }
+    .curtain-right { right: 2%; animation-delay: -3s; }
 
     @keyframes windSway {
-      0% { transform: rotate(-2deg); }
-      100% { transform: rotate(3deg); }
+      0% { transform: rotate(-1.5deg) skewX(-1deg); }
+      100% { transform: rotate(2.5deg) skewX(1deg); }
     }
 
-    /* ✨ 呼應草稿：黃色的多肉擺放窗台/平台 */
+    /* 💛 完美重現手繪：大面積黃色多肉窗台/平台 */
     .window-ledge {
       position: absolute;
-      bottom: 12%; left: 5%; width: 90%; height: 20%;
-      background-color: #f4c430; /* 草稿中的黃色暖調平台 */
-      border: 4px solid #4a3e3d;
+      bottom: 12%; left: 4%;
+      width: 92%; height: 18%;
+      background-color: #f4c430; /* 暖黃色手繪感平台 */
+      border: 5px solid #4a3e3d;
       border-radius: 12px;
-      box-shadow: 0 8px 0px rgba(74, 62, 61, 0.1);
+      box-shadow: 0 10px 0px rgba(74, 62, 61, 0.15);
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* 🎯 植物主體：改用圖片標籤，徹底告別青江菜！ */
+    /* 🎯 精緻去背多肉圖片 (拒絕青江菜) */
     .succulent-image {
       position: absolute;
-      bottom: 85%; /* 讓它完美站立在黃色窗台上 */
-      width: 110px; /* 根據圖片精緻度調整大小 */
+      bottom: 80%; /* 穩穩站立在黃色窗台上 */
+      width: 140px; /* 加大尺寸，更具視覺核心感 */
       height: auto;
       cursor: pointer;
+      user-select: none;
       transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.15));
+      filter: drop-shadow(0 10px 15px rgba(74, 62, 61, 0.2));
     }
     .succulent-image:active {
-      transform: scale(1.1) rotate(3deg); /* 點擊時會有極高質感的彈跳感 */
+      transform: scale(1.15) rotate(3deg); /* 點擊時極具動態Q彈感 */
     }
 
     /* ==========================================
-       🪵 右側牆面層：裝飾與你的「靈魂書櫃」
+       🪵 右側牆面空間 (佔螢幕 35% 寬度)
        ========================================== */
     .right-wall {
-      position: absolute;
-      top: 0; right: 0;
-      width: 35%; height: 100%;
-      padding: 20px;
-      box-sizing: border-box;
+      position: relative;
+      width: 35%;
+      height: 100%;
+      background-color: #f2ede4; /* 右牆壁顏色，做出微微的光影深淺差 */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-around;
+      padding: 40px 20px;
     }
 
     /* 牆面上的 Some 裝飾 */
     .some-decor {
-      border: 3px solid #4a3e3d;
-      padding: 8px 16px;
-      border-radius: 8px;
+      border: 4px solid #4a3e3d;
+      padding: 12px 24px;
+      border-radius: 12px;
       font-weight: bold;
       background: #fff;
-      transform: rotate(-2deg);
+      transform: rotate(-3deg);
+      box-shadow: 4px 4px 0px #4a3e3d;
     }
 
-    /* ✨ 呼應草稿：立體互動書櫃 (點擊翻閱死去植物歷史) */
+    /* 📚 完美重現手繪：靈魂立體書櫃 */
     .bookcase-container {
-      width: 90%;
-      height: 60%;
-      background-color: #d4a373; /* 精緻木質色 */
-      border: 4px solid #4a3e3d;
-      border-radius: 12px;
+      width: 85%;
+      height: 55%;
+      background-color: #dec09e; /* 溫潤的木質色 */
+      border: 5px solid #4a3e3d;
+      border-radius: 16px;
       cursor: pointer;
       position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      font-weight: bold;
-      box-shadow: -8px 8px 0px rgba(74, 62, 61, 0.1);
+      padding-top: 20px;
+      box-shadow: -10px 10px 0px rgba(74, 62, 61, 0.15);
       transition: all 0.3s ease;
     }
     .bookcase-container:hover {
-      transform: translate(2px, -2px);
-      box-shadow: -10px 10px 0px rgba(74, 62, 61, 0.15);
-      background-color: #c59262;
+      transform: translate(3px, -3px);
+      box-shadow: -13px 13px 0px rgba(74, 62, 61, 0.2);
+      background-color: #d1b18f;
     }
     
-    /* 書櫃內擺放的微型書籍裝飾線條 */
-    .books-line {
-      width: 80%; height: 12px;
-      background: #4a3e3d; margin: 8px 0; border-radius: 4px;
+    /* 書櫃分層隔板與書籍裝飾 */
+    .shelf {
+      width: 90%; height: 8px;
+      background: #4a3e3d; margin: 30px 0 10px 0; border-radius: 4px;
     }
+    .book-spine {
+      width: 25px; height: 50px;
+      background: #b85a5a; border: 3px solid #4a3e3d;
+      border-radius: 4px; margin-right: 5px;
+      display: inline-block;
+    }
+    .book-spine:nth-child(2) { background: #5a8bb8; height: 55px; transform: rotate(5deg); }
+    .book-spine:nth-child(3) { background: #6cb85a; height: 45px; }
 
     /* ==========================================
-       💬 頂部狀態與療癒對話框
+       📊 數據與療癒對話框 UI
        ========================================== */
     .hud-display {
       position: absolute;
-      top: 15px; left: 15px;
+      top: 25px; left: 25px;
       z-index: 10;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 8px 16px;
-      border: 3px solid #4a3e3d;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 10px 20px;
+      border: 4px solid #4a3e3d;
       border-radius: 30px;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 0px rgba(74, 62, 61, 0.1);
     }
 
     .dialogue-bubble {
       position: absolute;
-      bottom: 20px; left: 5%; width: 55%;
+      bottom: 25px; left: 25px; width: 58%;
       background: white;
-      border: 3px solid #4a3e3d;
-      border-radius: 16px;
-      padding: 12px;
-      font-size: 0.9rem;
+      border: 4px solid #4a3e3d;
+      border-radius: 20px;
+      padding: 16px;
+      font-size: 1rem;
       font-style: italic;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
       z-index: 10;
     }
 
     /* ==========================================
-       📖 歷史回憶錄彈窗 (點擊書櫃開啟)
+       📖 歷史回憶錄彈窗
        ========================================== */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(74, 62, 61, 0.5);
+      background: rgba(74, 62, 61, 0.6);
       backdrop-filter: blur(5px);
       display: flex; justify-content: center; align-items: center;
       opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
@@ -218,21 +219,21 @@
       background: #fffcf7;
       border: 5px solid #4a3e3d;
       border-radius: 24px;
-      width: 85%; max-width: 450px;
+      width: 90%; max-width: 480px;
       padding: 30px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
     }
     .history-scroll {
-      max-height: 250px; overflow-y: auto;
-      margin: 15px 0; padding-right: 5px;
+      max-height: 280px; overflow-y: auto;
+      margin: 20px 0; padding-right: 5px;
       text-align: left;
     }
     .history-item {
-      padding: 10px; border-bottom: 2px dashed #d9cebc;
+      padding: 12px; border-bottom: 2px dashed #d9cebc;
     }
     .close-btn {
       background: #4a3e3d; color: white; border: none;
-      padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: bold;
+      padding: 10px 24px; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 1rem;
     }
   </style>
 </head>
@@ -241,45 +242,45 @@
   <div class="game-stage">
     
     <div class="hud-display" id="hud-text">
-      ❤️ 壽命值: 100% | 💖 親密度: 0/100
+      ❤️ 多肉壽命: 100% | 💖 親密度: 0/100 | 🌲 階段: 1/4
     </div>
 
-    <div class="room-container">
-      
-      <div class="left-wall">
-        <div class="window-view" id="window-sky">
-          <div class="stars" id="night-stars"></div>
-          <div class="curtain-asset curtain-left"></div>
-          <div class="curtain-asset curtain-right"></div>
-        </div>
-
-        <div class="window-ledge">
-          <img src="https://picsum.photos/id/106/200/200" class="succulent-image" id="succulent-img" alt="多肉植物">
-        </div>
+    <div class="left-wall">
+      <div class="window-view" id="window-sky">
+        <div class="stars" id="night-stars"></div>
+        <div class="curtain-asset curtain-left"></div>
+        <div class="curtain-asset curtain-right"></div>
       </div>
 
-      <div class="right-wall">
-        <div class="some-decor">🖼️ Some 裝飾</div>
-
-        <div class="bookcase-container" id="bookcase-btn">
-          <span>📚 書櫃</span>
-          <div class="books-line"></div>
-          <div class="books-line"></div>
-          <span style="font-size: 0.75rem; color: #7a6e67;">(點擊翻閱歷史回憶)</span>
-        </div>
+      <div class="window-ledge">
+        <img src="https://i.imgur.com/KUp2G2X.png" class="succulent-image" id="succulent-img" alt="手繪多肉植物">
       </div>
+    </div>
 
+    <div class="right-wall">
+      <div class="some-decor">🖼️ Some 裝飾</div>
+
+      <div class="bookcase-container" id="bookcase-btn">
+        <span style="font-size: 1.2rem;">書櫃</span>
+        <div style="margin-top: 15px;">
+          <div class="book-spine"></div>
+          <div class="book-spine"></div>
+          <div class="book-spine"></div>
+        </div>
+        <div class="shelf"></div>
+        <span style="font-size: 0.8rem; color: #615349; padding: 0 10px; text-align: center;">(點擊翻閱過往死去的植物日記)</span>
+      </div>
     </div>
 
     <div class="dialogue-bubble" id="dialogue-box">
-      「白天到了，微風輕輕吹過窗簾。點擊多肉來細心澆水照顧它吧。」
+      「清晨的微風吹過窗簾，陽光剛剛好。點擊多肉來給它澆水曬太陽吧。」
     </div>
 
   </div>
 
   <div class="modal-overlay" id="history-modal">
     <div class="modal-content">
-      <h3 style="margin-top:0; text-align: center;">📖 書櫃深處的植物回憶錄</h3>
+      <h3 style="margin-top:0; text-align: center; color: #4a3e3d;">📖 書櫃深處的植物回憶錄</h3>
       <div class="history-scroll" id="history-list">
         </div>
       <div style="text-align: center;">
@@ -300,57 +301,50 @@
     const closeModalBtn = document.getElementById('close-modal-btn');
     const historyList = document.getElementById('history-list');
 
-    // 遊戲核心數據庫
-    let plantLife = 100;       // 壽命值 (100 -> 0)
-    let lovePoints = 0;        // 親密度 (0 -> 100)
-    let currentStage = 1;      // 階段 (1:幼苗, 2:成長, 3:繁茂, 4:開花)
+    // 狀態設定
+    let plantLife = 100;
+    let lovePoints = 0;
+    let currentStage = 1;
     let isDead = false;
 
-    // 從記憶體中讀取死去的植物歷史日記
-    let graveyard = JSON.parse(localStorage.getItem('succulent_graveyard_v2')) || [];
+    let graveyard = JSON.parse(localStorage.getItem('succulent_graveyard_v3')) || [];
 
-    // 🎯 圖片資源庫：【這裡就是換掉青江菜的關鍵！】
-    // 當你有了精緻的手繪多肉圖片網址後，直接貼進來蓋掉這些預設網址，效果就會非常完美！
+    // 🎯 淘汰青江菜！換上真正的「去背多肉植物生長圖片網址」
     const succulentImages = {
-      1: "https://picsum.photos/id/106/200/200", // 階段 1 幼苗圖
-      2: "https://picsum.photos/id/324/200/200", // 階段 2 成長圖
-      3: "https://picsum.photos/id/365/200/200", // 階段 3 繁茂圖
-      4: "https://picsum.photos/id/305/200/200", // 階段 4 精緻開花圖
-      dead: "https://picsum.photos/id/212/200/200" // ☠️ 死亡後留下的微小種子/枯萎圖
+      1: "https://i.imgur.com/KUp2G2X.png", // 階段 1：精緻胖嘟嘟小多肉
+      2: "https://i.imgur.com/uSshWv8.png", // 階段 2：長大抽高、葉片飽滿
+      3: "https://i.imgur.com/XkofgqB.png", // 階段 3：群生繁茂姿態
+      4: "https://i.imgur.com/gA9mD9Z.png", // 階段 4：頂端綻放精緻小花！
+      dead: "https://i.imgur.com/u46U8bV.png" // ☠️ 枯萎後留下的療癒小種子
     };
 
-    /* --- 1. 真實時間與環境天色連動 --- */
+    /* --- 時間環境連動 --- */
     function updateEnvironment() {
       const hour = new Date().getHours();
-      
       if (hour >= 6 && hour < 17) {
-        // 白天
-        windowSky.style.background = "linear-gradient(to bottom, #9bc2ff, #ffffff)";
+        windowSky.style.background = "linear-gradient(to bottom, #a3c9ff, #ffffff)";
         nightStars.style.opacity = "0";
       } else if (hour >= 17 && hour < 19) {
-        // 黃昏
         windowSky.style.background = "linear-gradient(to bottom, #f39c12, #f1c40f)";
         nightStars.style.opacity = "0";
       } else {
-        // 夜晚
-        windowSky.style.background = "linear-gradient(to bottom, #1a252f, #2c3e50)";
-        nightStars.style.opacity = "0.8"; // 星星亮起
+        windowSky.style.background = "linear-gradient(to bottom, #141d26, #243342)";
+        nightStars.style.opacity = "0.85";
       }
+      renderStatus();
     }
 
-    /* --- 2. 更新 HUD 與狀態數據 --- */
     function renderStatus() {
       if (isDead) {
         hudText.innerHTML = "🕯️ 狀態: 這株多肉的生命已化作書櫃裡的故事。";
         succulentImg.src = succulentImages.dead;
         return;
       }
-      
-      hudText.innerHTML = `❤️ 壽命值: ${plantLife}% | 💖 親密度: ${lovePoints}/100 | 🌲 階段: ${currentStage}/4`;
+      hudText.innerHTML = `❤️ 多肉壽命: ${plantLife}% | 💖 親密度: ${lovePoints}/100 | 🌲 階段: ${currentStage}/4`;
       succulentImg.src = succulentImages[currentStage];
     }
 
-    /* --- 3. 點擊植物：進行限量的溫馨照顧與生命週期控制 --- */
+    /* --- 培育互動 --- */
     succulentImg.addEventListener('click', () => {
       if (isDead) {
         dialogueBox.innerHTML = "「盆栽裡留下一顆小小的種子，它的故事已經被好好記錄在右邊的書櫃裡了。」";
@@ -358,65 +352,52 @@
       }
 
       const hour = new Date().getHours();
-      // 夜晚防打擾限制
       if (hour >= 19 || hour < 6) {
-        dialogueBox.innerHTML = "「月亮出來了，現在是夜晚。讓多肉好好休息吧，明天太陽升起再跟它玩。」";
+        dialogueBox.innerHTML = "「夜深了，多肉和窗外的星星都睡著了。明天太陽升起再跟它玩吧。」";
         return;
       }
 
-      // 增加親密度
       lovePoints += 20;
       dialogueBox.innerHTML = "「你輕輕幫它澆了點水，並把它挪到陽光最舒服的地方。親密度提升了！」";
 
-      // 機制 A：親密度達到上限，換取延長壽命
       if (lovePoints >= 100) {
         lovePoints = 0;
-        plantLife = Math.min(plantLife + 25, 100); // 延長 25% 壽命，最高 100%
-        dialogueBox.innerHTML = "✨ 奇蹟發生了！你和多肉的親密度達到滿分，它的生命獲得了愛的延續（壽命延長）！";
-        
-        // 進化到下一階段
-        if (currentStage < 4) {
-          currentStage++;
-        }
+        plantLife = Math.min(plantLife + 30, 100); // 延長壽命
+        dialogueBox.innerHTML = "✨ 親密度滿分！多肉獲得了你的溫柔呵護，壽命延長，並且長得更茁壯了！";
+        if (currentStage < 4) currentStage++;
       }
-
       renderStatus();
     });
 
-    /* --- 4. 壽命流逝機制 (每 15 秒模擬生命減少，逼近死亡週期，測試完可以改長) --- */
+    /* --- 生命衰老週期 (為了測試，先設定每 20 秒扣一次壽命，可自由更改) --- */
     function checkLifeCycle() {
       if (isDead) return;
-
-      plantLife -= 5; // 壽命隨時間自然衰減
+      plantLife -= 5;
       
       if (plantLife <= 0) {
         plantLife = 0;
         isDead = true;
         
-        // 🕯️ 觸發靈魂機制：將它化作回憶錄寫進書櫃
+        // 寫入書櫃回憶錄
         const newMemory = {
           generation: graveyard.length + 1,
           date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
           finalStage: currentStage === 4 ? "🌸 成功開花結果" : `🌿 成長至第 ${currentStage} 階段`,
-          note: "它終究會離開，但窗外的風會記住它最美的模樣。"
+          note: "它終究會離開，但窗外的風和這個房間會記住它最美的模樣。"
         };
-        
         graveyard.push(newMemory);
-        localStorage.setItem('succulent_graveyard_v2', JSON.stringify(graveyard));
-        
+        localStorage.setItem('succulent_graveyard_v3', JSON.stringify(graveyard));
         dialogueBox.innerHTML = "🕯️ 這株多肉靜靜地結束了它的生命旅程。它的故事已經化作一本泛黃的日記，永久收藏在右側的書櫃上了。";
       }
       renderStatus();
     }
 
-    /* --- 5. 書櫃互動：翻閱過往死去的植物日記 --- */
+    /* --- 書櫃互動 --- */
     bookcaseBtn.addEventListener('click', () => {
-      historyList.innerHTML = ""; // 清空舊內容
-      
+      historyList.innerHTML = "";
       if (graveyard.length === 0) {
         historyList.innerHTML = "<p style='color:#888; text-align:center;'>書櫃上目前空空的。<br>當有植物生命走到盡頭時，回憶會自動珍藏在這裡。</p>";
       } else {
-        // 反向排序，讓最新的回憶在最上面
         [...graveyard].reverse().forEach(item => {
           const div = document.createElement('div');
           div.className = 'history-item';
@@ -424,26 +405,22 @@
             <p><b>📜【第 ${item.generation} 代多肉】</b></p>
             <p>📅 畢業時間: ${item.date}</p>
             <p>🌸 最終姿態: <span style="color:#e63946;">${item.finalStage}</span></p>
-            <p style="font-size:0.85rem; color:#666; italic;">墓志銘: "${item.note}"</p>
+            <p style="font-size:0.85rem; color:#666; font-style: italic;">回憶筆記: "${item.note}"</p>
           `;
           historyList.appendChild(div);
         });
       }
-      
-      historyModal.classList.add('open'); // 開啟書櫃彈窗
+      historyModal.classList.add('open');
     });
 
     closeModalBtn.addEventListener('click', () => {
       historyModal.classList.remove('open');
     });
 
-    // 6. 初始化啟動
+    // 啟動
     updateEnvironment();
-    renderStatus();
-    
-    // 定時器
-    setInterval(updateEnvironment, 60000); // 每分鐘同步一次天色
-    setInterval(checkLifeCycle, 15000);    // 每 15 秒模擬生命衰老 (方便你測試死亡與書櫃功能)
+    setInterval(updateEnvironment, 60000);
+    setInterval(checkLifeCycle, 20000); // 每 20 秒扣 5% 壽命，方便測試。之後想改慢只要把 20000 改大即可。
   </script>
 </body>
 </html>
