@@ -1,0 +1,36 @@
+/* ==========================================
+   🎨 風格一：手繪風 (預設)
+   ========================================== */
+body[data-style="handdrawn"] {
+  background-color: #f7f5f0; /* 溫柔的米白色 */
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: #5c5247;
+}
+
+body[data-style="handdrawn"] .pot-container {
+  border: 3px solid #bdaaa4;
+  border-radius: 30px; /* 圓角看起來很溫柔 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05); /* 柔和陰影 */
+  background-color: #ffffff;
+}
+
+/* ==========================================
+   👾 風格二：像素風
+   ========================================== */
+body[data-style="pixel"] {
+  background-color: #1a1a24; /* 復古暗色背景 */
+  font-family: 'Courier New', monospace; /* 等寬科技感字體 */
+  color: #00ffff;
+}
+
+body[data-style="pixel"] .pot-container {
+  border: 4px solid #ffffff; /* 像素風硬邊框 */
+  border-radius: 0px;        /* 絕對不要圓角！ */
+  box-shadow: 8px 8px 0px #000000; /* 復古方塊陰影 */
+  background-color: #101018;
+}
+
+/* 關鍵：讓像素圖片放大時保持顆粒感，不會變模糊 */
+body[data-style="pixel"] #plant-image {
+  image-rendering: pixelated;
+}
