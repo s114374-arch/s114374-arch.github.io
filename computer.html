@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌿 虛擬多肉植物養成日記 🌵</title>
+  
+  <style>
+    /* ==========================================
+       🎨 核心變數設定 (透過 data-style 切換)
+       ========================================== */
+    
+    /* 預設：溫馨手繪繪本風 */
+    body[data-style="handdrawn"] {
+      --bg-color: #f7f4ef;       /* 溫柔燕麥奶色 */
+      --panel-bg: #ffffff;       /* 純白面板 */
+      --text-color: #5c5247;     /* 深咖啡色文字 */
+      --border-style: 2px solid #bdaaa4;
+      --border-radius: 24px;     /* 溫柔大圓角 */
+      --box-shadow: 0 10px 30px rgba(189, 170, 164, 0.15);
+      --btn-bg: #e6dfd5;
+      --btn-hover: #bdaaa4;
+      --btn-text: #5c5247;
+      font-family: 'Microsoft JhengHei', sans-serif;
+    }
+
+    /* 切換：復古像素電玩風 */
+    body[data-style="pixel"] {
+      --bg-color: #121214;       /* 極深灰黑 */
+      --panel-bg: #1a1a24;       /* 科技暗藍 */
+      --text-color: #00ffff;     /* 霓虹青色 */
+      --border-style: 4px solid #ffffff; /* 像素硬邊框 */
+      --border-radius: 0px;      /* 絕對不要圓角 */
+      --box-shadow: 8px 8px 0px #000000; /* 塊狀陰影 */
+      --btn-bg: #252538;
+      --btn-hover: #00ffff;
+      --btn-text: #000000;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* ==========================================
+       布局與外觀美化
+       ========================================== */
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 500px;
+      background-color: var(--panel-bg);
+      border: var(--border-style);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 25px;
+      box-sizing: border-box;
+      transition: all 0.5s ease;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 1.6rem;
+    }
+
+    /* 畫風切換按鈕 */
+    #style-toggle-btn {
+      padding: 8px 16px;
+      background-color: var(--btn-bg);
+      color: var(--text-color);
+      border: var(--border-style);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: bold;
+      font-family: inherit;
+    }
+    body[data-style="pixel"] #style-toggle-btn:hover {
+      background-color: var(--btn-hover);
+      color: var(--btn-text);
+    }
+    body[data-style="handdrawn"] #style-toggle-btn:hover {
+      background-color: #f1ede6;
+      transform: translateY(-2px);
+    }
+
+    /* 植物顯示區域 */
+    .plant-display {
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 5rem; /* 放大內建的 Emoji */
+      margin: 20px 0;
+      background-color: rgba(0,0,0,0.02);
+      border-radius: var(--border-radius);
+      border: var(--border-style);
+      position: relative;
+    }
+    body[data-style="pixel"] .plant-display {
+      background-color: #0d0d12;
+    }
+
+    /* 狀態數據列 */
+    .status-bar {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    /* 對話框/心靈雞湯 */
+    .dialogue-box {
+      min-height: 60px;
+      border: var(--border-style);
+      border-radius: var(--border-radius);
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 25px;
+      background-color: rgba(0,0,0,0.01);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: italic;
+    }
+
+    /* 控制按鈕組 */
+    .control-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .action-btn {
+      padding: 15px 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: var(--btn-bg);
+      color: var(--text-color);
+      border: var(--border-style);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    /* 按鈕懸停特效 */
+    .action-btn:hover {
+      background-color: var(--btn-hover);
+      color: var(--btn-text);
+    }
+    body[data-style="handdrawn"] .action-btn:hover {
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+
+<body data-style="handdrawn">
+
+  <div class="game-container">
+    
+    <header>
+      <h1 id="game-title">🌿 多肉植物觀測日記</h1>
+      <button id="style-toggle-btn">👾 切換成像素風</button>
+    </header>
+
+    <div class="status-bar">
+      <span id="plant-stage-text">階段: 1/5 (種子)</span>
+      <span id="plant-love-text">親密度: 💖 0</span>
+    </div>
+
+    <div class="plant-display" id="plant-avatar">🌱</div>
+
+    <div class="dialogue-box" id="dialogue-text">
+      「嗨！今天過得好嗎？記得多喝水喔。」
+    </div>
+
+    <div class="control-actions">
+      <button class="action-btn" id="btn-water">💧 澆水</button>
+      <button class="action-btn" id="btn-sun">☀️ 曬太陽</button>
+      <button class="action-btn" id="btn-weed">🧹 除草</button>
+    </div>
+
+  </div>
+
+  <script>
+    // 1. 取得網頁元素
+    const body = document.body;
+    const styleToggleBtn = document.getElementById('style-toggle-btn');
+    const gameTitle = document.getElementById('game-title');
+    const plantAvatar = document.getElementById('plant-avatar');
+    const stageText = document.getElementById('plant-stage-text');
+    const loveText = document.getElementById('plant-love-text');
+    const dialogueText = document.getElementById('dialogue-text');
+
+    const btnWater = document.getElementById('btn-water');
+    const btnSun = document.getElementById('btn-sun');
+    const btnWeed = document.getElementById('btn-weed');
+
+    // 2. 遊戲資料變數 (嘗試從記憶體讀取，若無則初始化)
+    let currentStage = localStorage.getItem('succulent_stage') ? parseInt(localStorage.getItem('succulent_stage')) : 1;
+    let lovePoints = localStorage.getItem('succulent_love') ? parseInt(localStorage.getItem('succulent_love')) : 0;
+
+    // 依成長階段定義 Emoji 與稱號
+    const plantStagesData = {
+      1: { emoji: "🌱", name: "害羞的嫩芽" },
+      2: { emoji: "🌿", name: "初長成的小葉" },
+      3: { emoji: "🌵", name: "元氣多肉盆栽" },
+      4: { emoji: "🌸", name: "奇蹟開花多肉" },
+      5: { emoji: "👑", name: "多肉大魔王" }
+    };
+
+    // 療癒系隨機心靈雞湯
+    const chickenSoups = [
+      "「不管今天過得如何，明天又是全新的一天。」",
+      "「慢慢來，比較快。我和你都在一起長大喔。」",
+      "「段考辛苦了！現在放空五分鐘，陪陪我吧。」",
+      "「深呼吸——有沒有聞到陽光的味道？」",
+      "「謝謝你的溫柔照顧，我覺得今天自己又變綠了一點！」",
+      "「不要跟別人比，你本來就是獨一無二的種子。」"
+    ];
+
+    /* --- 3. 核心功能：更新畫面顯示 --- */
+    function updateGameUI() {
+      // 更新狀態與 Emoji
+      const currentPlant = plantStagesData[currentStage];
+      plantAvatar.innerHTML = currentPlant.emoji;
+      stageText.innerHTML = `階段: ${currentStage}/5 (${currentPlant.name})`;
+      loveText.innerHTML = `親密度: 💖 ${lovePoints}`;
+
+      // 儲存進度到瀏覽器記憶體
+      localStorage.setItem('succulent_stage', currentStage);
+      localStorage.setItem('succulent_love', lovePoints);
+    }
+
+    /* --- 4. 事件監聽：切換畫風主題 --- */
+    styleToggleBtn.addEventListener('click', () => {
+      const currentStyle = body.getAttribute('data-style');
+      
+      if (currentStyle === 'handdrawn') {
+        // 切換到像素風
+        body.setAttribute('data-style', 'pixel');
+        styleToggleBtn.innerHTML = "🎨 切換成手繪風";
+        gameTitle.innerHTML = "👾 8-BIT 多肉觀測器";
+        dialogueText.innerHTML = "「SYSTEM: DETECTING LOVE VALUES...」";
+      } else {
+        // 切換回手繪風
+        body.setAttribute('data-style', 'handdrawn');
+        styleToggleBtn.innerHTML = "👾 切換成像素風";
+        gameTitle.innerHTML = "🌿 多肉植物觀測日記";
+        dialogueText.innerHTML = "「微風吹過，葉片輕輕搖擺了兩下。」";
+      }
+    });
+
+    /* --- 5. 事件監聽：培育互動邏輯 --- */
+    function gainLove(actionName, feedbackText) {
+      lovePoints += 10;
+      
+      // 隨機換一句心靈雞湯
+      const randomSoup = chickenSoups[Math.floor(Math.random() * chickenSoups.length)];
+      dialogueText.innerHTML = `【${actionName}】${feedbackText}<br><br>${randomSoup}`;
+
+      // 每累積 30 點親密度，植物就會進化到下一階段
+      if (lovePoints >= currentStage * 30 && currentStage < 5) {
+        currentStage++;
+        dialogueText.innerHTML = `✨ 恭喜！你的多肉植物在照顧下【進化】了！ ✨`;
+      }
+
+      updateGameUI();
+    }
+
+    btnWater.addEventListener('click', () => {
+      gainLove("澆水", "你溫柔地澆了點水，土壤濕潤了起來。");
+    });
+
+    btnSun.addEventListener('click', () => {
+      gainLove("曬太陽", "溫暖的光線灑在葉片上，暖洋洋的。");
+    });
+
+    btnWeed.addEventListener('click', () => {
+      gainLove("除草", "你細心地拔掉了旁邊的小雜草，空間變乾淨了！");
+    });
+
+    // 6. 遊戲初始啟動
+    updateGameUI();
+  </script>
+</body>
+</html>
