@@ -7,11 +7,11 @@
   
   <style>
     /* ==========================================
-       🎨 1. 全螢幕滿版與像素風（Pixelated）渲染設定
+       🎨 1. 全螢幕滿版與像素風渲染優化
        ========================================== */
     * {
       box-sizing: border-box;
-      /* 確保所有圖片在放大時保持像素點的清晰，不模糊，這才是 Pixel Art 的靈魂 */
+      /* 確保所有像素圖片在放大時邊緣依然清晰、不模糊 */
       image-rendering: pixelated;
       image-rendering: crisp-edges;
     }
@@ -20,292 +20,179 @@
       margin: 0; padding: 0;
       width: 100%; height: 100%;
       overflow: hidden;
-      background-color: #dbc9b5; /* 呼應圖片的復古大地色底色 */
+      background-color: #dbc9b5; /* 溫暖的復古大地色底色 */
       font-family: 'Courier New', 'Microsoft JhengHei', monospace;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* 🎮 3D 視角觀察相機 */
-    .view-cube-camera {
+    /* 🎮 核心：全螢幕立體遊戲舞台 */
+    .game-screen {
       position: relative;
       width: 100vw;
       height: 100vh;
-      perspective: 1500px; /* 增加 3D 縱深感 */
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* ==========================================
-       📐 2. 核心：等角透視立體房間 (Isometric Room)
-       ========================================== */
-    .isometric-room {
+    /* 📦 2D 像素空間主體（鎖定 16:9 比例，確保在任何螢幕上都不會變形） */
+    .space-container {
       position: relative;
-      width: 500px;  /* 3D 房間的底座大小 */
-      height: 500px;
-      /* 關鍵：斜切 45 度角俯瞰，完美還原參考圖視角 */
-      transform: rotateX(60deg) rotateZ(-45deg);
-      transform-style: preserve-3d;
-      transition: transform 0.5s ease;
-    }
-
-    /* 地板層 (躺在最底下的平面) */
-    .floor {
-      position: absolute;
-      width: 100%; height: 100%;
-      background-color: #bfab95; 
-      border: 6px solid #4a382c;
-      box-shadow: inset 0 0 40px rgba(74, 56, 44, 0.2);
-      z-index: 1;
-    }
-
-    /* 立體物件的基礎牆面設定 */
-    .wall {
-      position: absolute;
-      background-color: #ebd9c5;
-      border: 6px solid #4a382c;
-      transform-style: preserve-3d;
-    }
-
-    /* 🧱 左側牆面 (有大斜角斜頂與窗戶) */
-    .left-wall {
       width: 100%;
-      height: 400px; /* 牆壁高度 */
-      bottom: 100%; left: 0;
-      transform-origin: bottom center;
-      transform: rotateX(-90deg); /* 垂直立起 */
-      background: #f7ede2;
-      z-index: 2;
-    }
-
-    /* 🧱 右側牆面 (貼著書櫃) */
-    .right-wall {
-      width: 400px;
+      max-width: 1000px;
       height: 100%;
-      top: 0; left: 100%;
-      transform-origin: left center;
-      transform: rotateY(90deg); /* 垂直立起 */
-      background: #e8d8c8;
-      z-index: 2;
+      max-height: 562px;
+      /* 🎯 這裡換上你最滿意的「全螢幕立體空間像素大底圖」 */
+      background-image: url('https://i.imgur.com/vHq47fS.gif'); 
+      background-size: cover;
+      background-position: center;
+      border: 6px solid #4a382c;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.3);
     }
 
     /* ==========================================
-       🪟 像素物件層：大窗戶、天色、風吹窗簾
+       🎯 2. 精準定位互動層 (物件在空間中的絕對座標)
        ========================================== */
-    .window-container {
+    
+    /* 🌿 植物專屬位置：讓他完美站在像素大圖中的黃色窗台/桌面上 */
+    .succulent-slot {
       position: absolute;
-      top: 15%; left: 15%;
-      width: 60%; height: 50%;
-      border: 5px solid #4a382c;
-      background: linear-gradient(to bottom, #9bc2ff, #ffffff);
-      overflow: hidden;
-      transition: background 3s ease;
-    }
-
-    /* 閃爍的像素星星 */
-    .pixel-stars {
-      position: absolute;
-      width: 100%; height: 100%;
-      background-image: radial-gradient(circle, #fff 2px, transparent 2px);
-      background-size: 30px 30px;
-      opacity: 0;
-      transition: opacity 3s ease;
-    }
-
-    /* 隨風擺動的像素紗窗簾 (改用 CSS 特效模擬手繪感) */
-    .pixel-curtain {
-      position: absolute;
-      top: 0; width: 35%; height: 100%;
-      background: rgba(255, 255, 255, 0.4);
-      border-right: 2px dashed #4a382c;
-      transform-origin: top center;
-      animation: pixelWind 5s ease-in-out infinite alternate;
-    }
-    .curtain-left { left: 0; }
-    .curtain-right { right: 0; border-right: none; border-left: 2px dashed #4a382c; animation-delay: -2.5s; }
-
-    @keyframes pixelWind {
-      0% { transform: scaleX(1) rotate(-1deg); }
-      100% { transform: scaleX(1.1) rotate(2deg); }
-    }
-
-    /* ==========================================
-       🪴 桌子與主角多肉植物 (利用 TranslateZ 站立起來)
-       ========================================== */
-    /* 書桌本體 */
-    .desk {
-      position: absolute;
-      bottom: 20px; left: 40px;
-      width: 260px; height: 140px;
-      background-color: #bc8a5f;
-      border: 5px solid #4a382c;
-      transform: translateZ(0px); /* 貼在地上 */
-      box-shadow: -15px 15px 0px rgba(0,0,0,0.1);
-    }
-
-    /* 多肉植物定位架構：利用垂直旋轉，讓圖片「直立」站在桌面上！ */
-    .succulent-billboard {
-      position: absolute;
-      bottom: 40px; left: 120px;
-      width: 100px; height: 100px;
-      /* 關鍵：反向旋轉，讓圖片不管房間怎麼轉，都永遠垂直立在桌上，跟參考圖一模一樣！ */
-      transform: rotateZ(45deg) rotateX(-60deg) translateZ(30px);
-      transform-origin: bottom center;
+      bottom: 30%; /* 垂直座標（可依最終大圖微調） */
+      left: 32%;   /* 水平座標 */
+      width: 120px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
       z-index: 10;
     }
 
     .succulent-img {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
+      height: auto;
       cursor: pointer;
-      transition: transform 0.1s ease;
+      user-select: none;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    /* 點擊多肉時會有像素遊戲特有的 Q 彈縮放感 */
     .succulent-img:active {
-      transform: scale(1.2); /* 點擊時會有像素方塊的放大反饋 */
+      transform: scale(1.2) translateY(-5px);
     }
 
-    /* ==========================================
-       📚 右側牆面：呼應草稿與參考圖的「像素立體書櫃」
-       ========================================== */
-    .pixel-bookcase {
+    /* 📚 書櫃隱形互動區域：直接疊在大圖右側的書櫃位置 */
+    .bookcase-hotspot {
       position: absolute;
-      top: 40px; left: 40px;
-      width: 120px; height: 260px;
-      background-color: #a47148;
-      border: 5px solid #4a382c;
+      top: 15%;
+      right: 12%;
+      width: 140px;
+      height: 280px;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: center;
-      padding: 10px 0;
-      box-shadow: inset -5px -5px 0px rgba(0,0,0,0.1);
-      transition: background-color 0.2s ease;
+      z-index: 5;
+      /* 開發測試時可以把 background 改成 rgba 來看位置，正式運作時保持透明 */
+      background: rgba(255, 255, 255, 0); 
+      border-radius: 8px;
     }
-    .pixel-bookcase:hover {
-      background-color: #93623a;
-    }
-    .pixel-book {
-      width: 80%; height: 18px;
-      background: #b65353; border: 3px solid #4a382c;
-    }
-    .pixel-book:nth-child(2) { background: #5382b6; width: 75%; }
-    .pixel-book:nth-child(3) { background: #62b653; }
-
-    /* ==========================================
-       💬 頂部狀態與對話框 UI (浮在 3D 空間最上層)
-       ========================================== */
-    .ui-layer {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; /* 讓滑鼠可以穿透 UI 去點擊房間內的東西 */
-      z-index: 100;
-    }
-    .hud {
-      position: absolute;
-      top: 30px; left: 30px;
-      background: #fff8f0; border: 4px solid #4a382c;
-      padding: 12px 24px; font-weight: bold; font-size: 1rem;
-      pointer-events: auto;
-      box-shadow: 6px 6px 0px #4a382c;
-    }
-    .dialogue {
-      position: absolute;
-      bottom: 30px; left: 30px; right: 30px;
-      background: #fff8f0; border: 4px solid #4a382c;
-      padding: 18px; font-size: 1.1rem; font-style: italic;
-      pointer-events: auto;
-      box-shadow: 6px 6px 0px #4a382c;
+    .bookcase-hotspot:hover {
+      background: rgba(255, 255, 255, 0.08); /* 游標移上去時微微發光提示 */
     }
 
     /* ==========================================
-       📖 像素日記本彈窗
+       💬 3. 2D UI 疊加圖層 (浮在遊戲畫面最上方)
        ========================================== */
-    .modal {
+    .hud-panel {
+      position: absolute;
+      top: 25px; left: 25px;
+      background: #fff8f0;
+      border: 4px solid #4a382c;
+      padding: 10px 20px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 5px 5px 0px #4a382c;
+      z-index: 50;
+    }
+
+    .dialogue-box {
+      position: absolute;
+      bottom: 25px; left: 25px; right: 25px;
+      background: #fff8f0;
+      border: 4px solid #4a382c;
+      padding: 16px;
+      font-size: 1.05rem;
+      font-style: italic;
+      box-shadow: 5px 5px 0px #4a382c;
+      z-index: 50;
+    }
+
+    /* ==========================================
+       📖 4. 歷史日記本彈窗介面
+       ========================================== */
+    .modal-overlay {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(74, 56, 44, 0.6);
       display: flex; justify-content: center; align-items: center;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-      z-index: 200;
+      z-index: 100;
     }
-    .modal.open { opacity: 1; pointer-events: auto; }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    
     .modal-box {
-      background: #fff8f0; border: 5px solid #4a382c;
-      width: 90%; max-width: 460px; padding: 25px; text-align: center;
-      box-shadow: 12px 12px 0px #4a382c;
+      background: #fff8f0;
+      border: 5px solid #4a382c;
+      width: 90%; max-width: 450px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 10px 10px 0px #4a382c;
     }
-    .history-container {
-      max-height: 220px; overflow-y: auto; text-align: left;
+    .history-scroll {
+      max-height: 240px; overflow-y: auto;
       margin: 15px 0; padding-right: 5px;
-      border-top: 3px dashed #4a382c;
+      border-top: 2px dashed #4a382c;
+      text-align: left;
     }
-    .history-card { padding: 10px 0; border-bottom: 2px dashed #bc8a5f; }
+    .history-card { padding: 12px 0; border-bottom: 2px dashed #bc8a5f; }
     .close-btn {
-      background: #4a382c; color: white; border: none; padding: 8px 24px;
-      font-weight: bold; cursor: pointer; margin-top: 10px;
+      background: #4a382c; color: white; border: none;
+      padding: 8px 24px; font-weight: bold; cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <div class="view-cube-camera">
+  <div class="game-screen">
     
-    <div class="isometric-room">
+    <div class="hud-panel" id="hud-text">
+      ❤️ 壽命值: 100% | 💖 親密度: 0/100 | 🌸 世代: 第 1 代
+    </div>
+
+    <div class="space-container">
       
-      <div class="floor">
-        <div class="desk"></div>
-      </div>
-
-      <div class="wall left-wall">
-        <div class="window-container" id="window-sky">
-          <div class="pixel-stars" id="stars"></div>
-          <div class="pixel-curtain curtain-left"></div>
-          <div class="pixel-curtain curtain-right"></div>
-        </div>
-      </div>
-
-      <div class="wall right-wall">
-        <div class="pixel-bookcase" id="bookcase-btn">
-          <div class="pixel-book"></div>
-          <div class="pixel-book"></div>
-          <div class="pixel-book"></div>
-          <span style="font-size: 0.75rem; font-weight: bold; color: #fff;">回憶錄</span>
-        </div>
-      </div>
-
-      <div class="succulent-billboard">
+      <div class="succulent-slot">
         <img src="https://i.imgur.com/gK23wWw.png" class="succulent-img" id="succulent-img" alt="像素多肉">
       </div>
 
+      <div class="bookcase-hotspot" id="bookcase-btn" title="翻閱歷史回憶錄"></div>
+
+    </div>
+
+    <div class="dialogue-box" id="dialogue-box">
+      「微微的風吹進了等角像素房間。點擊多肉植物，在每天有限的次數內給予它溫暖的陪伴吧。」
     </div>
 
   </div>
 
-  <div class="ui-layer">
-    <div class="hud" id="hud-text">
-      ❤️ 壽命值: 100% | 💖 親密度: 0/100 | 🌸 世代: 第 1 代
-    </div>
-    
-    <div class="dialogue" id="dialogue-box">
-      「風輕輕吹著紗窗。點擊桌上的像素多肉，在有限的次數內給它最好的呵護吧。」
-    </div>
-  </div>
-
-  <div class="modal" id="history-modal">
+  <div class="modal-overlay" id="history-modal">
     <div class="modal-box">
       <h3 style="margin-top: 0; color: #4a382c;">📖 書櫃深處的像素多肉回憶錄</h3>
-      <div class="history-container" id="history-list"></div>
+      <div class="history-scroll" id="history-list">
+        </div>
       <button class="close-btn" id="close-modal-btn">闔上日記</button>
     </div>
   </div>
 
   <script>
-    const windowSky = document.getElementById('window-sky');
-    const stars = document.getElementById('stars');
     const succulentImg = document.getElementById('succulent-img');
     const hudText = document.getElementById('hud-text');
     const dialogueBox = document.getElementById('dialogue-box');
@@ -315,80 +202,64 @@
     const closeModalBtn = document.getElementById('close-modal-btn');
     const historyList = document.getElementById('history-list');
 
-    // 遊戲核心數值
+    // 培育核心數據
     let plantLife = 100;
     let lovePoints = 0;
     let currentStage = 1;
     let isDead = false;
 
-    // 從本地記憶體讀取死去的植物歷史
-    let graveyard = JSON.parse(localStorage.getItem('pixel_succulent_graveyard')) || [];
+    // 從瀏覽器快取讀取死去的植物歷史
+    let graveyard = JSON.parse(localStorage.getItem('pro_pixel_graveyard')) || [];
 
-    // 🎯 100% 符合參考圖的像素風(Pixel Art)多肉生長連續圖片網址
+    // 🎯 正確、精緻的去背像素風多肉生長連續圖網址
     const pixelSucculentAssets = {
-      1: "https://i.imgur.com/gK23wWw.png", // 階段 1：像素小嫩芽
-      2: "https://i.imgur.com/K3y7K9V.png", // 階段 2：像素肥厚葉片
-      3: "https://i.imgur.com/fMvOidC.png", // 階段 3：像素群生大株
-      4: "https://i.imgur.com/M6Lw1O3.png", // 階段 4：像素頂端盛開粉紅小花！
-      dead: "https://i.imgur.com/f9SByM3.png" // ☠️ 像素枯萎狀態（留下一顆傳承的小種子）
+      1: "https://i.imgur.com/gK23wWw.png", // 階段 1：像素嫩芽
+      2: "https://i.imgur.com/K3y7K9V.png", // 階段 2：肥厚小葉片
+      3: "https://i.imgur.com/fMvOidC.png", // 階段 3：群生繁茂
+      4: "https://i.imgur.com/M6Lw1O3.png", // 階段 4：頂端綻放精緻粉紅小花！
+      dead: "https://i.imgur.com/f9SByM3.png" // ☠️ 枯萎狀態（留下一顆傳承的小種子）
     };
-
-    /* --- 環境時間控制 --- */
-    function syncTime() {
-      const hour = new Date().getHours();
-      
-      if (hour >= 6 && hour < 18) {
-        // 白天：溫馨的像素淺藍空
-        windowSky.style.background = "linear-gradient(to bottom, #9bc2ff, #ffffff)";
-        stars.style.opacity = "0";
-      } else {
-        // 夜晚：深邃的像素夜空
-        windowSky.style.background = "linear-gradient(to bottom, #1d2636, #34445e)";
-        stars.style.opacity = "0.9"; // 星星閃爍
-      }
-      renderUI();
-    }
 
     function renderUI() {
       if (isDead) {
-        hudText.innerHTML = `🕯️ 狀態: 這株多肉的生命已化作故事 | ⏳ 世代: 第 ${graveyard.length + 1} 代`;
+        hudText.innerHTML = `🕯️ 狀態: 生命已化作書櫃裡的故事 | ⏳ 世代: 第 ${graveyard.length + 1} 代`;
         succulentImg.src = pixelSucculentAssets.dead;
         return;
       }
-      hudText.innerHTML = `❤️ 壽命值: ${plantLife}% | 💖 親密度: ${lovePoints}/100 | 🌲 生長階段: ${currentStage}/4`;
+      hudText.innerHTML = `❤️ 多肉壽命: ${plantLife}% | 💖 親密度: ${lovePoints}/100 | 🌲 階段: ${currentStage}/4`;
       succulentImg.src = pixelSucculentAssets[currentStage];
     }
 
     /* --- 互動照顧機制 --- */
     succulentImg.addEventListener('click', () => {
       if (isDead) {
-        dialogueBox.innerHTML = "「花盆裡留下一顆微小的像素種子。點擊右邊的牆上書櫃，翻閱它曾留下的美好回憶吧。」";
+        dialogueBox.innerHTML = "「花盆裡留下一顆微小的像素種子。點擊右側牆上的書櫃，翻閱它曾留下的故事吧。」";
         return;
       }
 
       const hour = new Date().getHours();
-      // 夜晚防打擾機制
+      // 夜晚防打擾機制 (晚上 7 點到清晨 6 點多肉會睡著)
       if (hour >= 19 || hour < 6) {
-        dialogueBox.innerHTML = "「月亮爬上來了，窗外繁星點點。多肉已經睡著了，明天太陽升起再照顧它吧。」";
+        dialogueBox.innerHTML = "「夜深了，像素房間也安靜了下來。多肉已經睡著了，明天太陽升起再跟它玩吧。」";
         return;
       }
 
-      // 白天照顧
+      // 正常照顧
       lovePoints += 25;
-      dialogueBox.innerHTML = "「你細心地為多肉修剪了枯葉，並倒進了今天限量的溫柔泉水。親密度上升！」";
+      dialogueBox.innerHTML = "「你細心地為多肉移開了阻擋陽光的遮蔽。親密度上升了！」";
 
-      // 親密度達到上限，換取壽命延長
+      // 親密度滿，延長壽命並進化
       if (lovePoints >= 100) {
         lovePoints = 0;
-        plantLife = Math.min(plantLife + 30, 100); // 注入愛意延長壽命
-        dialogueBox.innerHTML = "✨ 羈絆達到滿分！多肉感受到了你的陪伴，生命獲得了延續，外觀也產生了奇妙的成長！";
+        plantLife = Math.min(plantLife + 35, 100); // 親密度換取延壽
+        dialogueBox.innerHTML = "✨ 羈絆滿分！多肉感受到了你的溫柔陪伴，生命獲得了延續，外觀也產生了茁壯的蛻變！";
         if (currentStage < 4) currentStage++;
       }
       renderUI();
     });
 
-    /* --- 生命自然流逝 (為了方便你測試，設定每 25 秒扣 5% 壽命，逼近死亡與書櫃傳承機制) --- */
-    function lifeDrain() {
+    /* --- 生命自然流逝 (每 20 秒扣 5% 壽命，方便你進行死亡與書櫃傳承測試) --- */
+    function lifeCycleTick() {
       if (isDead) return;
       plantLife -= 5;
       
@@ -396,26 +267,26 @@
         plantLife = 0;
         isDead = true;
         
-        // 自動收錄至書櫃日記
+        // 🕯️ 自動寫入書櫃回憶錄
         const memory = {
           gen: graveyard.length + 1,
           date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
-          result: currentStage === 4 ? "🌸 成功達成了『完美開花』姿態" : `🌿 成長至第 ${currentStage} 階段`,
-          text: "它完成了這一段旅程，但這個像素角落會永遠記住它的呼吸。"
+          result: currentStage === 4 ? "🌸 成功達成『完美開花』姿態" : `🌿 成長至第 ${currentStage} 階段`,
+          text: "它在這張像素書桌上完成了使命，但這個溫馨的角落會永遠記住它。"
         };
         graveyard.push(memory);
-        localStorage.setItem('pixel_succulent_graveyard', JSON.stringify(graveyard));
+        localStorage.setItem('pro_pixel_graveyard', JSON.stringify(graveyard));
         
-        dialogueBox.innerHTML = "🕯️ 這株多肉安靜地迎來了生命的終點。它的一生已經被永久鐫刻進右側書櫃的日記本中了。";
+        dialogueBox.innerHTML = "🕯️ 這株多肉安靜地迎來了生命的終點。它的一生已經被永久收錄進右側書櫃的日記本中了。";
       }
       renderUI();
     }
 
-    /* --- 📚 書櫃歷史日記互動 --- */
+    /* --- 📚 書櫃互動邏輯 --- */
     bookcaseBtn.addEventListener('click', () => {
       historyList.innerHTML = "";
       if (graveyard.length === 0) {
-        historyList.innerHTML = "<p style='color:#7a624e; text-align:center; font-weight:bold;'>[書櫃目前空無一物]<br>當多肉生命走到盡頭時，它的靈魂日記會自動保存在這裏。</p>";
+        historyList.innerHTML = "<p style='color:#7a624e; text-align:center; font-weight:bold;'>[書櫃目前空無一物]<br>當有植物生命走到盡頭時，回憶日記會自動收藏在這裡。</p>";
       } else {
         [...graveyard].reverse().forEach(item => {
           const div = document.createElement('div');
@@ -423,8 +294,8 @@
           div.innerHTML = `
             <p><b>📖【第 ${item.gen} 代 像素多肉】</b></p>
             <p>📅 時間軸: ${item.date}</p>
-            <p>🌸 終極型態: <span style="color:#b65353; font-weight:bold;">${item.result}</span></p>
-            <p style="color:#7a624e; font-size:0.9rem;">✍️ 留白故事: "${item.text}"</p>
+            <p>🌸 終極姿態: <span style="color:#b65353; font-weight:bold;">${item.result}</span></p>
+            <p style="color:#7a624e; font-size:0.9rem; font-style: italic;">回憶錄筆記: "${item.text}"</p>
           `;
           historyList.appendChild(div);
         });
@@ -436,10 +307,9 @@
       historyModal.classList.remove('open');
     });
 
-    // 啟動世界
-    syncTime();
-    setInterval(syncTime, 30000); // 每30秒同步一次天色
-    setInterval(lifeDrain, 25000); // 壽命自然流逝定時器
+    // 初始化世界
+    renderUI();
+    setInterval(lifeCycleTick, 20000); // 壽命流逝定時器
   </script>
 </body>
 </html>
