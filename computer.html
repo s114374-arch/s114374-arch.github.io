@@ -3,104 +3,104 @@
 <html lang="zh-Hant">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bloomodoro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css">
+<title>Bloomodoro</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- 左側面板 -->
-
-  <aside class="sidebar">
-
 ```
-<h1>🌱 Bloomodoro</h1>
+<!-- 左側 -->
+<aside class="sidebar">
 
-<div class="timer-card">
+    <h1>🌱 Bloomodoro</h1>
 
-  <h2>番茄鐘</h2>
+    <div class="card">
 
-  <div id="timer">25:00</div>
+        <h2>番茄鐘</h2>
 
-  <button id="startBtn">
-    開始專注
-  </button>
+        <div id="timer">
+            25:00
+        </div>
 
-  <button id="resetBtn">
-    重置
-  </button>
+        <button id="startBtn">
+            開始專注
+        </button>
 
-</div>
+        <button id="resetBtn">
+            重置
+        </button>
 
-<div class="stats-card">
-  <h3>今日完成</h3>
-  <p id="completedPomodoro">0 次</p>
-</div>
+    </div>
+
+    <div class="card">
+
+        <h3>今日完成</h3>
+
+        <div id="completedPomodoro">
+            0 次
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- 房間 -->
+<main class="room-area">
+
+    <div class="plant-section">
+
+        <img
+            id="plantImage"
+            src="assets/plants/stage1.png"
+            alt="plant"
+        >
+
+        <p id="plantStage">
+            小嫩芽
+        </p>
+
+    </div>
+
+</main>
+
+<!-- 百科 -->
+<aside class="encyclopedia">
+
+    <h2>植物百科</h2>
+
+    <h3>熊童子</h3>
+
+    <p>
+    葉片像熊掌，
+    表面有柔軟絨毛。
+    </p>
+
+    <hr>
+
+    <p>
+    成長進度：
+    </p>
+
+    <p id="growthText">
+    0 / 4
+    </p>
+
+</aside>
 ```
-
-  </aside>
-
-  <!-- 房間區 -->
-
-  <main class="room-area">
-
-```
-<img
-  src="assets/room.png"
-  class="room-image"
-  alt="room"
->
-
-<div class="plant-section">
-
-  <img
-    id="plantImage"
-    src="assets/plants/stage1.png"
-    alt="plant"
-  >
-
-  <p id="plantStage">
-    小嫩芽
-  </p>
-
-</div>
-```
-
-  </main>
-
-  <!-- 百科 -->
-
-  <aside class="encyclopedia">
-
-```
-<h2>植物百科</h2>
-
-<h3>熊童子</h3>
-
-<p>
-  葉片像熊掌，
-  表面有柔軟絨毛。
-</p>
-
-<p>
-  成長進度：
-  <span id="growthText">
-  0 / 4
-  </span>
-</p>
-```
-
-  </aside>
 
 </div>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
 
