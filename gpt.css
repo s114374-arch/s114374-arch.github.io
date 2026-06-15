@@ -5,71 +5,215 @@ box-sizing:border-box;
 }
 
 body{
-font-family:sans-serif;
-background:#bfe5f5;
+
+```
+font-family:
+"Segoe UI",
+sans-serif;
+
+background:#dff4ff;
+
+height:100vh;
+```
+
 }
 
 .container{
+
+```
 display:flex;
 height:100vh;
+```
+
 }
+
+/* 左側 */
 
 .sidebar{
-width:250px;
+
+```
+width:260px;
+
+background:#edfaff;
+
 padding:20px;
-background:#dff4ff;
+
+display:flex;
+flex-direction:column;
+gap:20px;
+```
+
 }
 
-.timer-card,
-.stats-card{
-margin-top:20px;
-padding:20px;
-border-radius:15px;
+.sidebar h1{
+
+```
+text-align:center;
+```
+
+}
+
+.card{
+
+```
 background:white;
+
+border-radius:16px;
+
+padding:20px;
+
+box-shadow:
+0 4px 10px rgba(0,0,0,.08);
+```
+
 }
 
 #timer{
-font-size:48px;
+
+```
+font-size:52px;
+
 text-align:center;
+
 margin:20px 0;
+
+font-weight:bold;
+```
+
 }
 
 button{
+
+```
 width:100%;
-margin-top:10px;
+
 padding:12px;
+
+margin-top:10px;
+
 border:none;
+
 border-radius:10px;
+
 cursor:pointer;
+
+background:#7fc8ff;
+
+color:white;
+
+font-size:16px;
+```
+
 }
+
+button:hover{
+
+```
+opacity:.9;
+```
+
+}
+
+/* 中間房間 */
 
 .room-area{
+
+```
 flex:1;
+
 position:relative;
-display:flex;
-justify-content:center;
-align-items:center;
+
+background-image:
+url("assets/rooms/room_lv1.png");
+
+background-size:cover;
+
+background-position:center;
+
+overflow:hidden;
+```
+
 }
 
-.room-image{
-width:80%;
-max-width:900px;
-}
+/* 植物 */
 
 .plant-section{
+
+```
 position:absolute;
-bottom:120px;
-right:30%;
+
+left:50%;
+
+bottom:180px;
+
+transform:translateX(-50%);
+
 text-align:center;
+```
+
 }
 
 .plant-section img{
-width:120px;
+
+```
+width:160px;
+
 image-rendering:pixelated;
+
+transition:.3s;
+```
+
 }
 
-.encyclopedia{
-width:280px;
-background:#eaf8ff;
-padding:20px;
+#plantStage{
+
+```
+margin-top:10px;
+
+background:white;
+
+padding:6px 12px;
+
+border-radius:10px;
+
+display:inline-block;
+```
+
 }
+
+/* 百科 */
+
+.encyclopedia{
+
+```
+width:280px;
+
+background:#edfaff;
+
+padding:20px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:15px;
+```
+
+}
+
+.encyclopedia h2{
+
+```
+text-align:center;
+```
+
+}
+
+.encyclopedia p{
+
+```
+line-height:1.8;
+```
+
+}
+
