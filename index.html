@@ -1,64 +1,124 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
-  <head>
-    <meta charset="utf-8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Booth 2049 - 濾鏡製造機</title>
+    <title>Bloomodoro</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="icon.png">
-  </head>
-  <body>
+</head>
+<body>
 
-    <div class="app-container">
-      <header>
-        <h1>🤖 CYBER BOOTH 2049</h1>
-        <p>你的專屬濾鏡與梗圖照相館</p>
-      </header>
+<header>
+    <h1>🌱 Bloomodoro</h1>
+    <button class="settings-btn">⚙️</button>
+</header>
 
-      <div class="main-content">
-        <div class="preview-area">
-          <video id="video" autoplay playsinline style="display:none;"></video>
-          <canvas id="canvas"></canvas>
-          <div class="status-bar">STATUS: ON-AIR</div>
+<main>
+
+    <!-- 左側：番茄鐘 -->
+    <section class="timer-panel">
+
+        <div class="timer-card">
+            <h2>專注時間</h2>
+
+            <div class="timer">
+                25:00
+            </div>
+
+            <button class="start-btn">
+                開始專注
+            </button>
         </div>
 
-        <aside class="controls-panel">
-          
-          <section class="control-section">
-            <h3>🛸 1. 選擇即時濾鏡</h3>
-            <div class="filter-buttons">
-              <button class="filter-btn active" data-filter="none">原圖 Normal</button>
-              <button class="filter-btn" data-filter="retro-bw">復古黑白 B&W</button>
-              <button class="filter-btn" data-filter="cyber-neon">賽博霓虹 Neon</button>
-              <button class="filter-btn" data-filter="jpop-soft">日系小清新 Soft</button>
+        <div class="stats-card">
+            <h3>今日</h3>
+            <p>3 次番茄鐘</p>
+
+            <h3>累積</h3>
+            <p>128 次</p>
+
+            <p>64 小時</p>
+        </div>
+
+    </section>
+
+    <!-- 中間：房間 -->
+    <section class="room-panel">
+
+        <div class="room">
+
+            <img
+                class="room-bg"
+                src="assets/room/room.png"
+                alt="room"
+            >
+
+            <div class="window-sill">
+
+                <div class="plant-slot" id="plant1">
+                    <img src="assets/plants/bearpaw/stage1.png">
+                </div>
+
+                <div class="plant-slot">
+                    <img src="assets/plants/companion1.png">
+                </div>
+
+                <div class="plant-slot">
+                    <img src="assets/plants/companion2.png">
+                </div>
+
             </div>
-          </section>
 
-          <section class="control-section">
-            <h3>✍️ 2. 添加迷因文字</h3>
-            <div class="input-group">
-              <label>頂部文字 (TOP)</label>
-              <input type="text" id="topText" placeholder="輸入頂部文字...">
-            </div>
-            <div class="input-group">
-              <label>底部文字 (BOTTOM)</label>
-              <input type="text" id="bottomText" placeholder="輸入底部文字...">
-            </div>
-          </section>
+        </div>
 
-          <section class="control-section action-section">
-            <h3>📸 3. 捕捉與保存</h3>
-            <div class="action-buttons">
-              <button id="snap">TAKE PHOTO</button>
-              <a id="download" class="download-btn disabled" download="cyber-photo.png">SAVE IMAGE</a>
-            </div>
-          </section>
+    </section>
 
-        </aside>
-      </div>
+    <!-- 右側：圖鑑 -->
+    <section class="guide-panel">
 
-    </div>
+        <button class="guide-toggle">
+            📖
+        </button>
 
-    <script src="script.js"></script>
-  </body>
+    </section>
+
+</main>
+
+<!-- 資訊卡 -->
+<div class="plant-info-card">
+
+    <h2>🧸 熊童子</h2>
+
+    <p class="status">
+        🌱 萌芽中
+    </p>
+
+    <p>
+        看起來快長出新葉子了 ✨
+    </p>
+
+    <button>
+        查看詳細資訊
+    </button>
+
+</div>
+
+<!-- 音樂列 -->
+<footer>
+
+    <button>🎵 Lo-fi</button>
+
+    <button>🌧 Rain</button>
+
+    <button>🌲 Forest</button>
+
+    <button>☕ Cafe</button>
+
+    <button>🎹 Piano</button>
+
+</footer>
+
+<script src="script.js"></script>
+
+</body>
 </html>
