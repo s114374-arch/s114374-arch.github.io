@@ -3,8 +3,366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloomodoro</title>
-    <link rel="stylesheet" href="bloomodoro.css">
+    <title>Pixel Garden - Bloomodoro</title>
+    <style>
+        /* ==========================================================================
+           🎨 視覺樣式表 (原本的 bloomodoro.css 內容)
+           ========================================================================== */
+        :root {
+            --bg-color: #3a7d8c; /* 配合最終效果圖的青綠色溫馨背景 */
+            --panel-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #2c3e50;
+            --accent-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --border-radius: 16px;
+            --pixel-border: 4px solid #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei";
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 20px;
+            width: 100%;
+            max-width: 1240px;
+            height: 85vh;
+            min-height: 680px;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: var(--pixel-border);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.15);
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 12px;
+            text-align: center;
+            background: #fff;
+            border: var(--pixel-border);
+            border-radius: var(--border-radius);
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.15);
+        }
+
+        /* 番茄鐘區域 */
+        .timer-card {
+            text-align: center;
+        }
+
+        #timer {
+            font-size: 52px;
+            font-weight: bold;
+            color: var(--danger-color);
+            margin: 10px 0;
+        }
+
+        .control-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 22px;
+            font-size: 16px;
+            font-weight: bold;
+            border: var(--pixel-border);
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            transition: transform 0.1s;
+        }
+
+        button:active {
+            transform: translate(2px, 2px);
+        }
+
+        #startBtn {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        #startBtn.running {
+            background: #f1c40f;
+            color: #333;
+        }
+
+        #resetBtn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        /* 統計資訊 */
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0;
+            font-size: 14px;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 6px;
+        }
+
+        .stat-line span:last-child {
+            font-weight: bold;
+            color: #2980b9;
+        }
+
+        .music-card {
+            background: #34495e;
+            color: #fff;
+            text-align: center;
+        }
+
+        .music-title { font-weight: bold; font-size: 16px; }
+        .music-sub { font-size: 12px; color: #bdc3c7; margin-top: 4px; }
+
+        /* 3D 立體像素房間架構 (還原您的手稿設計) */
+        .center-panel {
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #eef2f3 0%, #bdc3c7 100%);
+            border: var(--pixel-border);
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.15);
+        }
+
+        .room-3d {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            transform: rotateX(60deg) rotateZ(-45deg);
+            transform-style: preserve-3d;
+        }
+
+        .wall {
+            position: absolute;
+            border: 2px solid #b2bec3;
+        }
+
+        /* 左牆：帶有大窗戶與多肉植物窗台 */
+        .left-wall {
+            width: 300px;
+            height: 300px;
+            transform: rotateY(90deg) translateZ(-150px) translateX(150px);
+            background: #dfe4ea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 右牆：放置書櫃與裝飾 */
+        .right-wall {
+            width: 300px;
+            height: 300px;
+            transform: rotateX(90deg) translateZ(150px) translateY(-150px);
+            background: #f1f2f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .floor {
+            width: 300px;
+            height: 300px;
+            transform: translateZ(-150px) translateX(50px) translateY(50px);
+            background: #a4b0be;
+        }
+
+        .rug {
+            width: 140px;
+            height: 140px;
+            background: #ff6b81;
+            margin: 80px;
+            border: 4px dashed #fff;
+        }
+
+        .bookshelf {
+            font-size: 36px;
+            transform: rotateZ(45deg);
+            text-align: right;
+        }
+        
+        .decorations {
+            font-size: 24px;
+            transform: rotateZ(45deg);
+        }
+
+        /* 大窗戶與窗台結構 */
+        .window {
+            width: 220px;
+            height: 160px;
+            border: var(--pixel-border);
+            background: #8ed4ff;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .window-sky {
+            height: 75%;
+            background: linear-gradient(#8ed4ff, #dff5ff);
+        }
+
+        .window-sill {
+            height: 25%;
+            background: #d35400; /* 木質窗台 */
+            border-top: var(--pixel-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding-bottom: 4px;
+        }
+
+        .pot {
+            font-size: 24px;
+            position: relative;
+        }
+
+        .main-plant {
+            font-size: 38px;
+            z-index: 10;
+            transition: transform 0.2s;
+        }
+
+        /* 動態回饋動畫 */
+        .soil-shake-animation {
+            animation: shakeSoil 2.5s ease-in-out;
+        }
+
+        @keyframes shakeSoil {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            10%, 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(-6deg) translateY(-4px); }
+            20%, 40%, 60%, 80% { transform: scale(1.1) rotate(6deg) translateY(-4px); }
+        }
+
+        .leaf-grow-animation {
+            animation: growLeaf 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes growLeaf {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4) translateY(-8px); }
+            100% { transform: scale(1); }
+        }
+
+        /* 植物詳細資訊卡 */
+        .plant-sub {
+            font-style: italic;
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }
+
+        .status-box {
+            background: #f8f9fa;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+
+        .status-title {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .status-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .next-box {
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border: 3px solid #2c3e50;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar {
+            background: var(--accent-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .progress-ratio {
+            text-align: right;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* 右側追蹤列表 */
+        .timeline-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .timeline-list li {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: 14px;
+            border: 2px solid transparent;
+        }
+
+        .timeline-list li.active {
+            color: var(--text-color);
+            background: #e8f8f5;
+            border: 2px solid var(--accent-color);
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -39,14 +397,15 @@
                     <div class="window">
                         <div class="window-sky"></div>
                         <div class="window-sill">
-                            <div class="pot companion-left">🌿</div>
+                            <div class="pot">🌵</div>
                             <div id="plantEmoji" class="pot main-plant">🌰</div>
-                            <div class="pot companion-right">🌸</div>
+                            <div class="pot">🌿</div>
                         </div>
                     </div>
                 </div>
                 <div class="wall right-wall">
-                    <div class="bookshelf">📚</div>
+                    <div class="bookshelf">📚 書櫃</div>
+                    <div class="decorations">🖼️ 裝飾</div>
                 </div>
                 <div class="floor">
                     <div class="rug"></div>
@@ -87,6 +446,176 @@
             </div>
         </div>
     </div>
-    <script src="bloomodoro.js"></script>
+
+    <script>
+        const DEV_MODE = true; // true: 25秒測試版 / false: 25分鐘正式版
+        const START_TIME = DEV_MODE ? 25 : 1500;
+
+        let timeLeft = START_TIME;
+        let isRunning = false;
+        let timerInterval = null;
+
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const plantEmoji = document.getElementById('plantEmoji');
+        const stageText = document.getElementById('stageText');
+        const nextStageText = document.getElementById('nextStageText');
+        const countdownText = document.getElementById('countdownText');
+        const progressText = document.getElementById('progressText');
+        const progressBar = document.getElementById('progressBar');
+        const totalPomodorosDisplay = document.getElementById('totalPomodoros');
+        const totalFocusTimeDisplay = document.getElementById('totalFocusTime');
+        const completedPlantsDisplay = document.getElementById('completedPlants');
+
+        let data = JSON.parse(localStorage.getItem('bloomodoro_v1_final_data')) || {
+            growth: 0,
+            totalPomodoros: 0,
+            totalFocusTime: 0,
+            completedPlants: 0
+        };
+
+        const stages = [
+            { thresh: 0, emoji: '🌰', name: '種子' },
+            { thresh: 1, emoji: '🌱', name: '萌芽' },
+            { thresh: 3, emoji: '🌿', name: '成長' },
+            { thresh: 6, emoji: '🌸', name: '含苞' },
+            { thresh: 10, emoji: '🌺', name: '盛開' }
+        ];
+
+        function saveStorage() {
+            localStorage.setItem('bloomodoro_v1_final_data', JSON.stringify(data));
+        }
+
+        function updateUI() {
+            let currentStage = stages[0];
+            let nextStage = stages[1];
+
+            for (let i = 0; i < stages.length; i++) {
+                if (data.growth >= stages[i].thresh) {
+                    currentStage = stages[i];
+                    nextStage = stages[i + 1] || null;
+                }
+            }
+
+            plantEmoji.textContent = currentStage.emoji;
+            
+            if (data.growth === 10) {
+                stageText.textContent = `${currentStage.emoji} 已盛開`;
+            } else {
+                stageText.textContent = `${currentStage.emoji} ${currentStage.name}中`;
+            }
+            
+            if (nextStage) {
+                nextStageText.textContent = `${nextStage.emoji} ${nextStage.name}`;
+                let remaining = nextStage.thresh - data.growth;
+                countdownText.textContent = remaining;
+            } else {
+                nextStageText.textContent = "最高階段";
+                countdownText.textContent = "0";
+            }
+
+            progressText.textContent = `${data.growth} / 10`;
+            const percentage = Math.min((data.growth / 10) * 100, 100);
+            progressBar.style.width = `${percentage}%`;
+
+            totalPomodorosDisplay.textContent = `${data.totalPomodoros} 個`;
+            totalFocusTimeDisplay.textContent = `${data.totalFocusTime} 分鐘`;
+            completedPlantsDisplay.textContent = `${data.completedPlants} 盆`;
+
+            stages.forEach(s => {
+                const stepElement = document.getElementById(`step${s.thresh}`);
+                if (stepElement) {
+                    if (data.growth >= s.thresh) {
+                        stepElement.className = "active";
+                    } else {
+                        stepElement.className = "";
+                    }
+                }
+            });
+        }
+
+        function renderTimer() {
+            let mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+            let secs = String(timeLeft % 60).padStart(2, '0');
+            timerDisplay.textContent = `${mins}:${secs}`;
+        }
+
+        startBtn.onclick = () => {
+            if (isRunning) {
+                isRunning = false;
+                startBtn.textContent = "開始";
+                startBtn.classList.remove('running');
+                clearInterval(timerInterval);
+            } else {
+                isRunning = true;
+                startBtn.textContent = "暫停";
+                startBtn.classList.add('running');
+                timerInterval = setInterval(handleTick, 1000);
+            }
+        };
+
+        resetBtn.onclick = () => {
+            isRunning = false;
+            clearInterval(timerInterval);
+            startBtn.textContent = "開始";
+            startBtn.classList.remove('running');
+            timeLeft = START_TIME;
+            renderTimer();
+        };
+
+        function handleTick() {
+            if (!isRunning) return;
+            timeLeft--;
+            
+            if (timeLeft <= 0) {
+                timeLeft = START_TIME;
+                
+                let initialGrowth = data.growth;
+                data.growth++;
+                data.totalPomodoros++;
+                data.totalFocusTime += DEV_MODE ? 1 : 25;
+
+                isRunning = false;
+                clearInterval(timerInterval);
+                startBtn.textContent = "開始";
+                startBtn.classList.remove('running');
+
+                if (initialGrowth === 0 && data.growth === 1) {
+                    plantEmoji.className = 'pot main-plant soil-shake-animation';
+                    setTimeout(() => {
+                        plantEmoji.className = 'pot main-plant';
+                        executeNotification();
+                    }, 2500);
+                } else {
+                    plantEmoji.className = 'pot main-plant leaf-grow-animation';
+                    setTimeout(() => {
+                        plantEmoji.className = 'pot main-plant';
+                        executeNotification();
+                    }, 800);
+                }
+                
+                saveStorage();
+                updateUI();
+                renderTimer();
+            }
+            renderTimer();
+        }
+
+        function executeNotification() {
+            if (data.growth >= 10) {
+                alert('🎉 恭喜！熊童子已順地盛開 🌺！已獲得完成紀錄！點擊確定即可重新播種。');
+                data.completedPlants++;
+                data.growth = 0;
+                saveStorage();
+                updateUI();
+            } else {
+                alert('🔔 完成一次番茄鐘！植物獲得了專注養分，繼續加油 🌱！');
+            }
+        }
+
+        updateUI();
+        renderTimer();
+    </script>
 </body>
 </html>
