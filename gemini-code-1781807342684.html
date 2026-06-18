@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloomodoro</title>
+    <link rel="stylesheet" href="bloomodoro.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="panel left-panel">
+            <div class="brand">🍅 Pixel Garden</div>
+            
+            <div class="card timer-card">
+                <h2>番茄鐘</h2>
+                <div id="timer">25:00</div>
+                <div class="control-btns">
+                    <button id="startBtn">開始</button>
+                    <button id="resetBtn">重置</button>
+                </div>
+            </div>
+            
+            <div class="card stats-card">
+                <h3>專注數據統計</h3>
+                <div class="stat-line"><span>總番茄鐘</span><span id="totalPomodoros">0 個</span></div>
+                <div class="stat-line"><span>總專注時間</span><span id="totalFocusTime">0 分鐘</span></div>
+                <div class="stat-line"><span>完成植物數</span><span id="completedPlants">0 盆</span></div>
+            </div>
+            
+            <div class="card music-card">
+                <div class="music-title">🎵 lofi beats</div>
+                <div class="music-sub">chill & relax</div>
+            </div>
+        </div>
+
+        <div class="panel center-panel">
+            <div class="room-3d">
+                <div class="wall left-wall">
+                    <div class="window">
+                        <div class="window-sky"></div>
+                        <div class="window-sill">
+                            <div class="pot companion-left">🌿</div>
+                            <div id="plantEmoji" class="pot main-plant">🌰</div>
+                            <div class="pot companion-right">🌸</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wall right-wall">
+                    <div class="bookshelf">📚</div>
+                </div>
+                <div class="floor">
+                    <div class="rug"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel right-panel">
+            <div class="card info-card">
+                <h2 id="plantName">熊童子</h2>
+                <div class="plant-sub">Cotyledon tomentosa</div>
+                
+                <div class="status-box">
+                    <div class="status-title">當前狀態</div>
+                    <div id="stageText" class="status-value">🌰 種子</div>
+                </div>
+
+                <div class="next-box">
+                    <div>下一階段：<span id="nextStageText" class="highlight">🌱 萌芽</span></div>
+                    <div class="progress-details">還需 <span id="countdownText" class="highlight">1</span> 次番茄鐘</div>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <div id="progressText" class="progress-ratio">0 / 10</div>
+            </div>
+
+            <div class="card timeline-card">
+                <h3>成長階段追蹤</h3>
+                <ul class="timeline-list">
+                    <li id="step0" class="active">🌰 種子 (0次)</li>
+                    <li id="step1">🌱 萌芽 (1次)</li>
+                    <li id="step3">🌿 成長 (3次)</li>
+                    <li id="step6">🌸 含苞 (6次)</li>
+                    <li id="step10">🌺 盛開 (10次)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="bloomodoro.js"></script>
+</body>
+</html>
