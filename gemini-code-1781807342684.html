@@ -1,649 +1,365 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Garden - Bloomodoro</title>
-    <style>
-        /* ==========================================================================
-           🎨 16-Bit 復古電玩像素風精緻樣式表 (Premium Pixel UI)
-           ========================================================================== */
-        :root {
-            --bg-color: #2b3a4a;        /* 深沉優雅的像素夜空藍 */
-            --panel-bg: #e0e4eb;       /* 經典灰色遊戲主機外殼色 */
-            --panel-dark: #2c3e50;     /* 深色黑邊與標題底色 */
-            --text-color: #2c3e50;
-            --pixel-green: #2cd666;    /* 飽和像素綠 */
-            --pixel-red: #ff4757;      /* 飽和像素紅 */
-            --pixel-yellow: #ffa502;   /* 飽和像素黃 */
-            --pixel-border: 4px solid #1e272e; /* 厚重的 8-bit 黑邊 */
-            --pixel-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3); /* 遊戲卡片硬陰影 */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloomodoro</title>
+  
+  <style>
+    /* ==========================================
+       🎨 1. 視覺樣式表 (CSS)
+       ========================================== */
+    body, html {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      background-color: #f1f8fc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, "Microsoft JhengHei";
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei";
-            image-rendering: pixelated; /* 強制流暢的像素鋸齒質感 */
-        }
+    .game-container {
+      width: 90%; max-width: 960px;
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
 
-        body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(#34495e 20%, transparent 20%),
-                              radial-gradient(#34495e 20%, transparent 20%);
-            background-size: 16px 16px;
-            background-position: 0 0, 8px 8px;
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+    /* 通用卡片樣式 */
+    .card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+    }
 
-        /* 三欄式完美比例配置 */
-        .app-container {
-            display: grid;
-            grid-template-columns: 300px 1fr 320px;
-            gap: 25px;
-            width: 100%;
-            max-width: 1300px;
-            height: 85vh;
-            min-height: 700px;
-        }
+    /* 🧱 左側：遊戲主畫面與番茄鐘面板 */
+    .pomo-column { flex: 2; display: flex; flex-direction: column; gap: 20px; }
+    
+    .room-stage {
+      height: 300px;
+      background-color: #fff;
+      display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; justify-items: center;
+      border: 4px solid #fff; border-radius: 12px;
+    }
 
-        @media (max-width: 1024px) {
-            .app-container {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-        }
+    .pot-slot { position: relative; width: 100%; text-align: center; }
+    .slot-label { font-size: 11px; color: #999; margin-bottom: 5px; }
+    .plant-emoji { font-size: 80px; }
 
-        .panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    /* 植物成長動畫效果 */
+    .grow-animation {
+      animation: growBoost 1s ease;
+    }
+    @keyframes growBoost {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4) translateY(-10px); }
+      100% { transform: scale(1); }
+    }
 
-        /* 🤖 遊戲主機外殼質感的精緻卡片 */
-        .card {
-            background: var(--panel-bg);
-            border: var(--pixel-border);
-            border-radius: 4px;
-            padding: 18px;
-            box-shadow: var(--pixel-shadow);
-            position: relative;
-        }
+    .control-panel { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    #timer { font-size: 48px; font-weight: bold; color: #cd6161; margin: 10px 0; }
 
-        /* 卡片上方的復古小標籤 */
-        .card-header {
-            background: var(--panel-dark);
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 4px 10px;
-            margin: -18px -18px 15px -18px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    .ctrl-btns { display: flex; gap: 10px; }
+    .btn {
+      padding: 10px 20px; font-size: 14px; font-weight: bold;
+      background: #f2b93b; color: #fff; border: none; border-radius: 6px; cursor: pointer;
+    }
+    .btn.stop { background: #cd6161; }
 
-        .brand {
-            font-size: 24px;
-            font-weight: bold;
-            padding: 12px;
-            text-align: center;
-            background: #ff4757;
-            color: white;
-            border: var(--pixel-border);
-            border-radius: 4px;
-            box-shadow: var(--pixel-shadow);
-            text-shadow: 2px 2px 0px #000;
-        }
+    /* 📊 統計資訊 */
+    .stats-info {
+      display: flex; justify-content: space-around;
+      font-size: 14px; font-weight: bold; color: #5c4a3b;
+    }
 
-        /* ⏱️ 左側：番茄鐘精緻化 */
-        .timer-card {
-            text-align: center;
-        }
+    /* 📖 右側：Bloomopedia 百科全書 */
+    .wiki-column { flex: 1.5; min-width: 320px; }
+    
+    .wiki-header {
+      margin-top: 0; color: #5c4a3b; border-bottom: 2px solid #5c4a3b; padding-bottom: 5px;
+    }
 
-        /* 電子復古 LED 螢幕質感 */
-        .timer-screen {
-            background: #1e272e;
-            border: 4px solid #747d8c;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            box-shadow: inset 0px 0px 10px rgba(0,0,0,0.8);
-        }
+    .wiki-content {
+      max-height: 520px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 15px;
+    }
 
-        #timer {
-            font-size: 54px;
-            font-weight: bold;
-            color: #00ff66; /* 經典雷射綠字 */
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
-            letter-spacing: 2px;
-        }
+    .plant-entry {
+      border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px;
+    }
 
-        .control-btns {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
+    /* 鎖定狀態 */
+    .locked-entry {
+      opacity: 0.4; filter: grayscale(100%);
+    }
 
-        /* 像素立體按鈕 */
-        button {
-            padding: 10px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            border: var(--pixel-border);
-            border-radius: 4px;
-            cursor: pointer;
-            background: #fff;
-            box-shadow: 0px 4px 0px #000;
-            transition: all 0.05s;
-        }
+    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
+    .plant-name-block { display: flex; flex-direction: column; }
+    .p-name { font-weight: bold; font-size: 16px; color: #3a5fcd; }
+    .p-sci { font-size: 12px; color: #7f8c8d; font-style: italic; }
+    .p-badge { font-size: 12px; color: #cd6161; }
 
-        button:active {
-            transform: translateY(4px);
-            box-shadow: 0px 0px 0px #000;
-        }
+    /* 區塊樣式 */
+    .entry-block { margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
+    .block-title { font-weight: bold; font-size: 13px; color: #5c4a3b; margin-bottom: 4px; }
+    .block-info { font-size: 13px; color: #5c4a3b; line-height: 1.4; }
 
-        #startBtn { background: var(--pixel-green); color: #000; }
-        #startBtn.running { background: var(--pixel-yellow); color: #000; }
-        #resetBtn { background: #ced6e0; color: #000; }
+    /* 真實照片預留區 */
+    .real-photo-slot {
+      width: 100%; height: 100px;
+      background: #eee3d5; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: #999; font-size: 12px;
+    }
 
-        /* 📊 專注數據統計清單 */
-        .stat-line {
-            display: flex;
-            justify-content: space-between;
-            margin: 14px 0;
-            font-size: 14px;
-            border-bottom: 4px dashed #95a5a6;
-            padding-bottom: 6px;
-        }
-
-        .stat-line span:first-child {
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .stat-line span:last-child {
-            font-weight: bold;
-            color: #2f3542;
-            background: #ced6e0;
-            padding: 2px 6px;
-            border-radius: 2px;
-        }
-
-
-        /* 🖼️ 中間面板：100% 還原手稿的 2D 平面像素房間舞台 */
-        .center-panel {
-            background: #2f3542; /* 外圍暗色裁切框 */
-            border: var(--pixel-border);
-            border-radius: 4px;
-            box-shadow: var(--pixel-shadow);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .pixel-room-stage {
-            width: 100%;
-            max-width: 600px;
-            aspect-ratio: 4 / 3; /* 固定遊戲主機畫面比例，絕不跑調 */
-            background: #f5cd79; /* 手稿中的溫馨黃牆壁 */
-            border: var(--pixel-border);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* 牆面正中央的大窗戶 */
-        .pixel-window {
-            position: absolute;
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 65%;
-            height: 45%;
-            border: var(--pixel-border);
-            background: linear-gradient(to bottom, #74b9ff, #a1c4fd); /* 像素天空漸層 */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            box-shadow: inset 0 4px 0 rgba(0,0,0,0.1);
-        }
-
-        /* 窗戶玻璃反光與白雲 */
-        .pixel-window::before {
-            content: "☁️          ☁️";
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            font-size: 20px;
-            opacity: 0.8;
-        }
-
-        /* 木質多肉窗台 */
-        .pixel-window-sill {
-            height: 25px;
-            background: #e15f41; /* 手稿木頭紅褐色 */
-            border-top: var(--pixel-border);
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        /* 窗台上的配角小植物 */
-        .sill-decor {
-            font-size: 18px;
-            margin: 0 5px;
-        }
-
-        /* 核心焦點：位於窗台正中央的主角盆栽 */
-        .main-plant-spot {
-            position: absolute;
-            bottom: 20px; /* 精準立在窗台正上方 */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            text-align: center;
-        }
-
-        #plantEmoji {
-            font-size: 64px; /* 放大主多肉圖示 */
-            display: inline-block;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.15));
-        }
-
-        .plant-tag {
-            background: #1e272e;
-            color: #fff;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 2px;
-            margin-top: -5px;
-            display: inline-block;
-            border: 2px solid #fff;
-        }
-
-        /* 房間地板層（對齊手稿下半部） */
-        .room-floor {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 25%;
-            background: #cf6a87; /* 磚紅色木地板 */
-            border-top: var(--pixel-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 0 25px 8px 25px;
-        }
-
-        /* 地面上的精緻像素家具物體 */
-        .floor-furniture {
-            background: #f7f1e3;
-            border: 3px solid #1e272e;
-            padding: 4px 10px;
-            font-size: 13px;
-            font-weight: bold;
-            box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .bed-object {
-            background: #ff4757; /* 紅色點綴床單 */
-            color: white;
-            border-top-left-radius: 4px;
-        }
-
-        /* 🎬 像素低影格率生長動畫 */
-        .soil-shake-animation {
-            animation: pixelShake 2.5s steps(4) infinite;
-        }
-        @keyframes pixelShake {
-            0%, 100% { transform: scale(1) translate(0,0); }
-            25% { transform: scale(1.05) translate(-4px, -2px); }
-            50% { transform: scale(1.05) translate(4px, 2px); }
-            75% { transform: scale(1.05) translate(-2px, 4px); }
-        }
-
-        .leaf-grow-animation {
-            animation: pixelGrow 0.8s steps(3);
-        }
-        @keyframes pixelGrow {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3) translateY(-8px); }
-            100% { transform: scale(1); }
-        }
-
-
-        /* 📋 右側面板：狀態與數值進度條 */
-        .info-card h2 { margin: 0; font-size: 22px; color: #1e272e; }
-        
-        .plant-sub {
-            font-style: italic;
-            font-size: 13px;
-            color: #57606f;
-            margin: 4px 0 12px 0;
-        }
-
-        .status-box {
-            background: #ffffff;
-            border: var(--pixel-border);
-            padding: 12px;
-            margin-bottom: 12px;
-            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
-        }
-        .status-title { font-size: 12px; color: #747d8c; font-weight: bold; }
-        .status-value { font-size: 18px; font-weight: bold; color: #ff4757; margin-top: 2px; }
-
-        .next-box { font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
-        .highlight { font-weight: bold; color: #2cd666; }
-
-        /* 像素血條質感的進度條 */
-        .progress-bar-container {
-            background: #2c3e50;
-            border: var(--pixel-border);
-            height: 26px;
-            overflow: hidden;
-            margin-bottom: 4px;
-        }
-        .progress-bar {
-            background: linear-gradient(to right, #2cd666, #1dd1a1);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s steps(5);
-        }
-        .progress-ratio { text-align: right; font-size: 12px; font-weight: bold; color: #2c3e50; }
-
-        /* 右下角：成長階段清單 */
-        .timeline-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .timeline-list li {
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            color: #a4b0be;
-            font-size: 13px;
-            border-left: 4px solid #ced6e0;
-        }
-        .timeline-list li.active {
-            color: #1e272e;
-            background: #fff;
-            border: var(--pixel-border);
-            font-weight: bold;
-        }
-    </style>
+  </style>
 </head>
 <body>
-    <div class="app-container">
-        
-        <div class="panel left-panel">
-            <div class="brand">🍅 PIXEL GARDEN</div>
-            
-            <div class="card timer-card">
-                <div class="card-header">⏱️ TIMER CORE</div>
-                <div class="timer-screen">
-                    <div id="timer">25:00</div>
-                </div>
-                <div class="control-btns">
-                    <button id="startBtn">START</button>
-                    <button id="resetBtn">RESET</button>
-                </div>
-            </div>
-            
-            <div class="card stats-card">
-                <div class="card-header">📊 USER DATA</div>
-                <div class="stat-line"><span>🍅 總番茄鐘</span><span id="totalPomodoros">0 個</span></div>
-                <div class="stat-line"><span>⏳ 總專注時間</span><span id="totalFocusTime">0 分鐘</span></div>
-                <div class="stat-line"><span>🏆 完成植物數</span><span id="completedPlants">0 盆</span></div>
-            </div>
+
+  <div class="game-container">
+    
+    <!-- 左側面板 -->
+    <div class="pomo-column">
+      
+      <!-- 遊戲舞台區 -->
+      <div class="card room-stage">
+        <div class="pot-slot">
+          <div class="slot-label">[陪伴植物A]</div>
+          <div>🌿</div>
         </div>
-
-        <div class="panel center-panel">
-            <div class="pixel-room-stage">
-                
-                <div class="pixel-window">
-                    <div class="pixel-window-sill">
-                        <div class="sill-decor">🌵</div>
-                        <div class="sill-decor">🌿</div>
-                        <div class="sill-decor" style="opacity: 0;"></div> <div class="sill-decor">🍀</div>
-                        <div class="sill-decor">🌸</div>
-                    </div>
-                </div>
-
-                <div class="main-plant-spot">
-                    <div id="plantEmoji">🌰</div>
-                    <br>
-                    <div class="plant-tag">熊童子</div>
-                </div>
-
-                <div class="room-floor">
-                    <div class="floor-furniture">📚 書櫃</div>
-                    <div class="floor-furniture bed-object">🛏️ 雙人床</div>
-                </div>
-
-            </div>
+        <div class="pot-slot">
+          <div class="slot-label">[培育中]</div>
+          <div id="plantEmoji" class="plant-emoji">🌰</div>
         </div>
-
-        <div class="panel right-panel">
-            <div class="card info-card">
-                <div class="card-header">📋 PLANT INFO</div>
-                <h2 id="plantName">熊童子</h2>
-                <div class="plant-sub">Cotyledon tomentosa</div>
-                
-                <div class="status-box">
-                    <div class="status-title">CURRENT STAGE</div>
-                    <div id="stageText" class="status-value">🌰 種子狀態</div>
-                </div>
-
-                <div class="next-box">
-                    <div>NEXT：<span id="nextStageText" class="highlight">🌱 萌芽</span></div>
-                    <div>還需 <span id="countdownText" class="highlight">1</span> 次專注養分</div>
-                </div>
-                
-                <div class="progress-bar-container">
-                    <div id="progressBar" class="progress-bar"></div>
-                </div>
-                <div id="progressText" class="progress-ratio">0 / 10</div>
-            </div>
-
-            <div class="card timeline-card">
-                <div class="card-header">🧬 LIFE CYCLE</div>
-                <ul class="timeline-list">
-                    <li id="step0" class="active">🌰 種子階段 (0次)</li>
-                    <li id="step1">🌱 萌芽初期 (1次)</li>
-                    <li id="step3">🌿 葉片成長 (3次)</li>
-                    <li id="step6">🌸 孕育含苞 (6次)</li>
-                    <li id="step10">🌺 完美盛開 (10次)</li>
-                </ul>
-            </div>
+        <div class="pot-slot">
+          <div class="slot-label">[陪伴植物B]</div>
+          <div>🌸</div>
         </div>
+      </div>
+
+      <!-- 控制區 -->
+      <div class="card control-panel">
+        <h1>🌱 Bloomodoro</h1>
+        <div id="timer">25:00</div>
+        <div class="ctrl-btns">
+          <button class="btn" id="start-btn">開始專注</button>
+          <button class="btn stop" id="reset-btn">重設</button>
+          <button class="btn" id="cheat-btn" style="background:#ddd; color:#333;">[測試快進]</button>
+        </div>
+      </div>
+
+      <!-- 統計區 -->
+      <div class="card stats-info">
+        <div>總番茄鐘：<span id="focus-count">0</span></div>
+        <div>完成植物數：<span id="completed-plants">0</span></div>
+      </div>
     </div>
 
-    <script>
-        const DEV_MODE = true; // true: 25秒測試版 / false: 25分鐘正式作業版
-        const START_TIME = DEV_MODE ? 25 : 1500;
+    <!-- 右側面板：Bloomopedia 百科全書 -->
+    <div class="card wiki-column">
+      <h3 class="wiki-header">📖 Bloomopedia</h3>
+      
+      <div class="wiki-content" id="wiki-content">
+        <!-- 植物百科插槽 -->
+      </div>
+    </div>
 
-        let timeLeft = START_TIME;
-        let isRunning = false;
-        let timerInterval = null;
+  </div>
 
-        const timerDisplay = document.getElementById('timer');
-        const startBtn = document.getElementById('startBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const plantEmoji = document.getElementById('plantEmoji');
-        const stageText = document.getElementById('stageText');
-        const nextStageText = document.getElementById('nextStageText');
-        const countdownText = document.getElementById('countdownText');
-        const progressText = document.getElementById('progressText');
-        const progressBar = document.getElementById('progressBar');
-        const totalPomodorosDisplay = document.getElementById('totalPomodoros');
-        const totalFocusTimeDisplay = document.getElementById('totalFocusTime');
-        const completedPlantsDisplay = document.getElementById('completedPlants');
+  <!-- ==========================================
+       🧠 核心控制邏輯 (JavaScript)
+       ========================================== */ -->
+  <script>
+    // 通用 DOM 元件
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('start-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const cheatBtn = document.getElementById('cheat-btn');
+    const plantImg = document.getElementById('plantEmoji');
+    const focusCountDisplay = document.getElementById('focus-count');
+    const completedPlantsDisplay = document.getElementById('completed-plants');
+    const wikiContent = document.getElementById('wiki-content');
 
-        let data = JSON.parse(localStorage.getItem('bloomodoro_v2_flat_data')) || {
-            growth: 0,
-            totalPomodoros: 0,
-            totalFocusTime: 0,
-            completedPlants: 0
-        };
+    // 遊戲核心數據，從 LocalStorage 載入
+    let totalFocusSessions = parseInt(localStorage.getItem('bloomodoro_focus_sessions')) || 0;
+    focusCountDisplay.innerText = totalFocusSessions;
 
-        const stages = [
-            { thresh: 0, emoji: '🌰', name: '種子' },
-            { thresh: 1, emoji: '🌱', name: '萌芽' },
-            { thresh: 3, emoji: '🌿', name: '成長' },
-            { thresh: 6, emoji: '🌸', name: '含苞' },
-            { thresh: 10, emoji: '🌺', name: '盛開' }
-        ];
+    // 番茄鐘變數
+    let timerId = null;
+    let isCounting = false;
+    let secondsLeft = 1500; // 預設 25 分鐘
 
-        function saveStorage() {
-            localStorage.setItem('bloomodoro_v2_flat_data', JSON.stringify(data));
-        }
+    // 植物百科知識庫數據
+    const plantKnowledgeBase = [
+      {
+        id: "Wiki-BearPaws",
+        name: "熊童子",
+        sciName: "Cotyledon tomentosa",
+        family: "景天科",
+        origin: "南非",
+        unlockCount: 1, // 需要幾株植物成熟解鎖此百科
+        growthSpeed: "★★★☆☆",
+        droughtToler: "★★★★★",
+        difficulty: "★☆☆☆☆",
+        bloomRate: "★★☆☆☆",
+        trivia: [
+          "熊童子的葉尖有紅色鋸齒。",
+          "看起來像熊掌。",
+          "因此得名熊童子。"
+        ]
+      }
+    ];
 
-        function updateUI() {
-            let currentStage = stages[0];
-            let nextStage = stages[1];
+    // 更新介面狀態
+    function updateUI() {
+      focusCountDisplay.innerText = totalFocusSessions;
+      completedPlantsDisplay.innerText = totalFocusSessions; // 簡化遊戲：完成幾次專注就解鎖幾次
+      
+      // 植物視覺更新（種子、萌芽、成長、含苞、盛開）
+      let stage = totalFocusSessions % 5;
+      const localAssets = ['🌰', '🌱', '🌿', '🌸', '🌺'];
+      plantImg.innerText = localAssets[stage];
+      plantImg.classList.remove('grow-animation'); // 移除舊動畫
 
-            for (let i = 0; i < stages.length; i++) {
-                if (data.growth >= stages[i].thresh) {
-                    currentStage = stages[i];
-                    nextStage = stages[i + 1] || null;
-                }
-            }
+      // 更新百科全書解鎖狀態
+      renderEncyclopedia();
+    }
 
-            plantEmoji.textContent = currentStage.emoji;
-            
-            if (data.growth === 10) {
-                stageText.textContent = `${currentStage.emoji} 已完美盛開`;
-            } else {
-                stageText.textContent = `${currentStage.emoji} ${currentStage.name}中`;
-            }
-            
-            if (nextStage) {
-                nextStageText.textContent = `${nextStage.emoji} ${nextStage.name}`;
-                let remaining = nextStage.thresh - data.growth;
-                countdownText.textContent = remaining;
-            } else {
-                nextStageText.textContent = "已達最高等級";
-                countdownText.textContent = "0";
-            }
+    // 渲染百科全書內容
+    function renderEncyclopedia() {
+      wikiContent.innerHTML = ''; // 清空內容
 
-            progressText.textContent = `${data.growth} / 10`;
-            const percentage = Math.min((data.growth / 10) * 100, 100);
-            progressBar.style.width = `${percentage}%`;
+      plantKnowledgeBase.forEach(plant => {
+        // 檢查解鎖狀態
+        const isLocked = totalFocusSessions < plant.unlockCount;
+        
+        const entryDiv = document.createElement('div');
+        entryDiv.className = `plant-entry ${isLocked ? 'locked-entry' : ''}`;
+        
+        // ① 基本資料與解鎖條件
+        const lockBadgeText = isLocked ? `[待解鎖：成熟 ${plant.unlockCount} 次]` : '[已解鎖]';
+        
+        const triviaContent = isLocked 
+          ? '完成番茄鐘自動解鎖詳細資訊...' 
+          : plant.trivia.map(point => `- ${point}`).join('<br>');
+        
+        const生長速度Content = isLocked ? '?' : plant.growthSpeed;
+        const耐旱程度Content = isLocked ? '?' : plant.droughtToler;
+        const照顧難度Content = isLocked ? '?' : plant.difficulty;
+        const開花機率Content = isLocked ? '?' : plant.bloomRate;
 
-            totalPomodorosDisplay.textContent = `${data.totalPomodoros} 個`;
-            totalFocusTimeDisplay.textContent = `${data.totalFocusTime} 分鐘`;
-            completedPlantsDisplay.textContent = `${data.completedPlants} 盆`;
+        // 百科內容 HTML 結構
+        entryDiv.innerHTML = `
+          <div class="entry-header">
+            <div class="plant-name-block">
+              <span class="p-name">${plant.name}</span>
+              <span class="p-sci">${plant.sciName}</span>
+            </div>
+            <div class="p-badge">${lockBadgeText}</div>
+          </div>
+          
+          <div class="entry-block">
+            <div class="block-title">① 基本資料</div>
+            <div class="block-info">
+              科屬：${plant.family}<br>
+              原產地：${plant.origin}
+            </div>
+          </div>
+          
+          <div class="entry-block">
+            <div class="block-title">② 生長資訊</div>
+            <div class="block-info">
+              生長速度：${生長速度Content}<br>
+              耐旱程度：${耐旱程度Content}<br>
+              照顧難度：${照顧難度Content}<br>
+              開花機率：${開花機率Content}
+            </div>
+          </div>
+          
+          <div class="entry-block">
+            <div class="block-title">③ 小知識</div>
+            <div class="block-info">${triviaContent}</div>
+          </div>
+          
+          <div class="entry-block">
+            <div class="block-title">④ 真實照片</div>
+            <div class="real-photo-slot">
+              ${isLocked ? '🌰 像素圖' : 'JPG [真實照片]'}
+            </div>
+          </div>
+          
+          <div class="entry-block">
+            <div class="block-title">⑤ 玩家成就</div>
+            <div class="block-info">
+              成熟次數：${completedPlantsDisplay.innerText}
+            </div>
+          </div>
+        `;
+        
+        wikiContent.appendChild(entryDiv);
+      });
+    }
 
-            stages.forEach(s => {
-                const stepElement = document.getElementById(`step${s.thresh}`);
-                if (stepElement) {
-                    if (data.growth >= s.thresh) {
-                        stepElement.className = "active";
-                    } else {
-                        stepElement.className = "";
-                    }
-                }
-            });
-        }
-
-        function renderTimer() {
-            let mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-            let secs = String(timeLeft % 60).padStart(2, '0');
-            timerDisplay.textContent = `${mins}:${secs}`;
-        }
-
-        startBtn.onclick = () => {
-            if (isRunning) {
-                isRunning = false;
-                startBtn.textContent = "START";
-                startBtn.classList.remove('running');
-                clearInterval(timerInterval);
-            } else {
-                isRunning = true;
-                startBtn.textContent = "PAUSE";
-                startBtn.classList.add('running');
-                timerInterval = setInterval(handleTick, 1000);
-            }
-        };
-
-        resetBtn.onclick = () => {
-            isRunning = false;
-            clearInterval(timerInterval);
-            startBtn.textContent = "START";
-            startBtn.classList.remove('running');
-            timeLeft = START_TIME;
-            renderTimer();
-        };
-
-        function handleTick() {
-            if (!isRunning) return;
-            timeLeft--;
-            
-            if (timeLeft <= 0) {
-                timeLeft = START_TIME;
-                
-                let initialGrowth = data.growth;
-                data.growth++;
-                data.totalPomodoros++;
-                data.totalFocusTime += DEV_MODE ? 1 : 25;
-
-                isRunning = false;
-                clearInterval(timerInterval);
-                startBtn.textContent = "START";
-                startBtn.classList.remove('running');
-
-                // 像素風低格率生長動畫觸發
-                if (initialGrowth === 0 && data.growth === 1) {
-                    plantEmoji.className = 'soil-shake-animation';
-                    setTimeout(() => {
-                        plantEmoji.className = '';
-                        executeNotification();
-                    }, 2500);
-                } else {
-                    plantEmoji.className = 'leaf-grow-animation';
-                    setTimeout(() => {
-                        plantEmoji.className = '';
-                        executeNotification();
-                    }, 800);
-                }
-                
-                saveStorage();
-                updateUI();
-                renderTimer();
-            }
-            renderTimer();
-        }
-
-        function executeNotification() {
-            if (data.growth >= 10) {
-                alert('🎉 恭喜！你的熊童子已順利達到最高階段【🌺 盛開】！已為你記入完成盆數，點擊確定即可重新播種下一盆！');
-                data.completedPlants++;
-                data.growth = 0;
-                saveStorage();
-                updateUI();
-            } else {
-                alert('🔔 叮咚！完成一次番茄鐘，多肉植物獲得了像素專注養分 🌱！');
-            }
-        }
-
+    // 倒數計時核心功能
+    function countdown() {
+      if (secondsLeft > 0) {
+        secondsLeft--;
+        displayTime();
+      } else {
+        // 完成一次番茄鐘
+        clearInterval(timerId);
+        timerId = null;
+        isCounting = false;
+        
+        // 更新專注次數並存檔
+        totalFocusSessions++;
+        localStorage.setItem('bloomodoro_focus_sessions', totalFocusSessions);
+        
+        // 成長動畫與視覺更新
         updateUI();
-        renderTimer();
-    </script>
+        plantImg.classList.add('grow-animation'); // 觸發長大動畫
+
+        alert("🎉 太棒了！你完成了一次完美的番茄鐘專注！");
+        startBtn.innerText = "⏱️ 開始專注";
+      }
+    }
+
+    function displayTime() {
+      const minutes = Math.floor(secondsLeft / 60);
+      const seconds = secondsLeft % 60;
+      timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // 按鈕監聽事件
+    startBtn.addEventListener('click', () => {
+      if (isCounting) {
+        // 暫停
+        clearInterval(timerId);
+        timerId = null;
+        isCounting = false;
+        startBtn.innerText = "⏱️ 繼續專注";
+      } else {
+        // 開始
+        isCounting = true;
+        startBtn.innerText = "⏸️ 暫停";
+        timerId = setInterval(countdown, 1000);
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      clearInterval(timerId);
+      timerId = null;
+      isCounting = false;
+      secondsLeft = 1500;
+      displayTime();
+      startBtn.innerText = "⏱️ 開始專注";
+    });
+
+    // Cheat code / 測試按鈕：點擊直接完成一次番茄鐘
+    cheatBtn.addEventListener('click', () => {
+      secondsLeft = 1;
+      countdown();
+    });
+
+    // 初始化網頁介面
+    updateUI();
+  </script>
 </body>
 </html>
