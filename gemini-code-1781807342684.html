@@ -6,28 +6,32 @@
     <title>Pixel Garden - Bloomodoro</title>
     <style>
         /* ==========================================================================
-           🎨 復古 2D 像素遊戲風格樣式表 (Pixel Art UI)
+           🎨 16-Bit 復古電玩像素風精緻樣式表 (Premium Pixel UI)
            ========================================================================== */
         :root {
-            --bg-color: #4a69bd;       /* 溫馨的復古遊戲藍色背景 */
-            --panel-bg: #ffffff;       /* 乾淨的卡片底色 */
-            --text-color: #2c3e50;     /* 深色像素邊框與文字顏色 */
-            --pixel-green: #2ecc71;    /* 像素綠 */
-            --pixel-red: #e74c3c;      /* 像素紅 */
-            --pixel-yellow: #f1c40f;   /* 像素黃 */
-            --pixel-border: 4px solid #2c3e50; /* 經典 8-bit 厚重黑邊 */
-            --solid-shadow: 6px 6px 0px #1e272e; /* 復古實心硬陰影 */
+            --bg-color: #2b3a4a;        /* 深沉優雅的像素夜空藍 */
+            --panel-bg: #e0e4eb;       /* 經典灰色遊戲主機外殼色 */
+            --panel-dark: #2c3e50;     /* 深色黑邊與標題底色 */
+            --text-color: #2c3e50;
+            --pixel-green: #2cd666;    /* 飽和像素綠 */
+            --pixel-red: #ff4757;      /* 飽和像素紅 */
+            --pixel-yellow: #ffa502;   /* 飽和像素黃 */
+            --pixel-border: 4px solid #1e272e; /* 厚重的 8-bit 黑邊 */
+            --pixel-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3); /* 遊戲卡片硬陰影 */
         }
 
         * {
             box-sizing: border-box;
             font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei";
-            /* 讓文字與邊框線條更具像素顆粒感 */
-            image-rendering: pixelated; 
+            image-rendering: pixelated; /* 強制流暢的像素鋸齒質感 */
         }
 
         body {
             background-color: var(--bg-color);
+            background-image: radial-gradient(#34495e 20%, transparent 20%),
+                              radial-gradient(#34495e 20%, transparent 20%);
+            background-size: 16px 16px;
+            background-position: 0 0, 8px 8px;
             color: var(--text-color);
             margin: 0;
             padding: 20px;
@@ -37,18 +41,17 @@
             min-height: 100vh;
         }
 
-        /* 完美還原手稿：標準平面三欄式佈局 */
+        /* 三欄式完美比例配置 */
         .app-container {
             display: grid;
-            grid-template-columns: 290px 1fr 330px;
-            gap: 20px;
+            grid-template-columns: 300px 1fr 320px;
+            gap: 25px;
             width: 100%;
-            max-width: 1280px;
+            max-width: 1300px;
             height: 85vh;
-            min-height: 680px;
+            min-height: 700px;
         }
 
-        /* 響應式：螢幕太小時自動垂直排列 */
         @media (max-width: 1024px) {
             .app-container {
                 grid-template-columns: 1fr;
@@ -59,264 +62,327 @@
         .panel {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
-        /* 帶有黑邊與實心陰影的像素卡片 */
+        /* 🤖 遊戲主機外殼質感的精緻卡片 */
         .card {
             background: var(--panel-bg);
             border: var(--pixel-border);
-            border-radius: 4px; /* 像素風採用微小圓角或直角 */
-            padding: 20px;
-            box-shadow: var(--solid-shadow);
+            border-radius: 4px;
+            padding: 18px;
+            box-shadow: var(--pixel-shadow);
+            position: relative;
+        }
+
+        /* 卡片上方的復古小標籤 */
+        .card-header {
+            background: var(--panel-dark);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 10px;
+            margin: -18px -18px 15px -18px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .brand {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
             padding: 12px;
             text-align: center;
-            background: #fff;
+            background: #ff4757;
+            color: white;
             border: var(--pixel-border);
             border-radius: 4px;
-            box-shadow: var(--solid-shadow);
+            box-shadow: var(--pixel-shadow);
+            text-shadow: 2px 2px 0px #000;
         }
 
-        /* 📥 左側面板：番茄鐘、統計、音樂 */
+        /* ⏱️ 左側：番茄鐘精緻化 */
         .timer-card {
             text-align: center;
         }
 
-        .timer-card h2 { margin: 0; font-size: 20px; }
+        /* 電子復古 LED 螢幕質感 */
+        .timer-screen {
+            background: #1e272e;
+            border: 4px solid #747d8c;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            box-shadow: inset 0px 0px 10px rgba(0,0,0,0.8);
+        }
 
         #timer {
-            font-size: 56px;
+            font-size: 54px;
             font-weight: bold;
-            color: var(--pixel-red);
-            margin: 15px 0;
-            text-shadow: 2px 2px 0px #ffdddd;
+            color: #00ff66; /* 經典雷射綠字 */
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+            letter-spacing: 2px;
         }
 
         .control-btns {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
         }
 
-        /* 像素風方塊按鈕 */
+        /* 像素立體按鈕 */
         button {
-            padding: 10px 22px;
+            padding: 10px 24px;
             font-size: 16px;
             font-weight: bold;
             border: var(--pixel-border);
             border-radius: 4px;
             cursor: pointer;
             background: #fff;
-            box-shadow: 3px 3px 0px #2c3e50;
-            transition: transform 0.05s, box-shadow 0.05s;
+            box-shadow: 0px 4px 0px #000;
+            transition: all 0.05s;
         }
 
         button:active {
-            transform: translate(3px, 3px);
-            box-shadow: 0px 0px 0px #2c3e50;
+            transform: translateY(4px);
+            box-shadow: 0px 0px 0px #000;
         }
 
-        #startBtn { background: var(--pixel-green); color: white; }
-        #startBtn.running { background: var(--pixel-yellow); color: #2c3e50; }
-        #resetBtn { background: #95a5a6; color: white; }
+        #startBtn { background: var(--pixel-green); color: #000; }
+        #startBtn.running { background: var(--pixel-yellow); color: #000; }
+        #resetBtn { background: #ced6e0; color: #000; }
 
+        /* 📊 專注數據統計清單 */
         .stat-line {
             display: flex;
             justify-content: space-between;
-            margin: 12px 0;
+            margin: 14px 0;
             font-size: 14px;
-            border-bottom: 3px double #cbd5e1; /* 復古雙線條 */
+            border-bottom: 4px dashed #95a5a6;
             padding-bottom: 6px;
+        }
+
+        .stat-line span:first-child {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .stat-line span:last-child {
             font-weight: bold;
-            color: #2980b9;
+            color: #2f3542;
+            background: #ced6e0;
+            padding: 2px 6px;
+            border-radius: 2px;
         }
 
-        .music-card {
-            background: #34495e;
-            color: #fff;
-            text-align: center;
-            border: var(--pixel-border);
-        }
-        .music-title { font-weight: bold; font-size: 16px; }
-        .music-sub { font-size: 12px; color: #bdc3c7; margin-top: 4px; }
 
-
-        /* 🖼️ 中間面板：正視角平面像素房間 (完全按照你的第二張手稿設計) */
+        /* 🖼️ 中間面板：100% 還原手稿的 2D 平面像素房間舞台 */
         .center-panel {
-            background: #f7d794; /* 房間溫馨的像素牆壁顏色 */
+            background: #2f3542; /* 外圍暗色裁切框 */
             border: var(--pixel-border);
             border-radius: 4px;
-            box-shadow: var(--solid-shadow);
+            box-shadow: var(--pixel-shadow);
             position: relative;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-end; /* 讓家具和窗台落實到地面上 */
-            padding: 0;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .pixel-room-stage {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 4 / 3; /* 固定遊戲主機畫面比例，絕不跑調 */
+            background: #f5cd79; /* 手稿中的溫馨黃牆壁 */
+            border: var(--pixel-border);
+            position: relative;
             overflow: hidden;
         }
 
-        /* 正面大窗戶結構 */
+        /* 牆面正中央的大窗戶 */
         .pixel-window {
             position: absolute;
-            top: 40px;
-            left: 40px;
-            width: 240px;
-            height: 180px;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65%;
+            height: 45%;
             border: var(--pixel-border);
-            background: #74b9ff; /* 像素藍天 */
+            background: linear-gradient(to bottom, #74b9ff, #a1c4fd); /* 像素天空漸層 */
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            box-shadow: inset 0 4px 0 rgba(0,0,0,0.1);
         }
 
+        /* 窗戶玻璃反光與白雲 */
         .pixel-window::before {
-            content: "☁️";
+            content: "☁️          ☁️";
             position: absolute;
-            top: 20px;
+            top: 15px;
             left: 20px;
-            font-size: 24px;
+            font-size: 20px;
+            opacity: 0.8;
         }
 
-        /* 橫跨左側的木質多肉窗台 */
+        /* 木質多肉窗台 */
         .pixel-window-sill {
-            height: 40px;
-            background: #cd6133; /* 木頭色 */
+            height: 25px;
+            background: #e15f41; /* 手稿木頭紅褐色 */
             border-top: var(--pixel-border);
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
-            padding-bottom: 4px;
+            padding-bottom: 2px;
         }
 
-        /* 房間地面的盆栽與家具 (對齊你的手繪配置) */
-        .room-floor {
-            height: 120px;
-            background: #b33939; /* 復古紅磚/木地板色 */
-            border-top: var(--pixel-border);
-            width: 100%;
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 0 30px 10px 30px;
+        /* 窗台上的配角小植物 */
+        .sill-decor {
+            font-size: 18px;
+            margin: 0 5px;
         }
 
-        /* 裝飾品元件 */
-        .pixel-furniture {
-            font-size: 45px;
-            margin-bottom: 5px;
-            position: relative;
-        }
-
-        /* 主角植物：位於窗台或地面的核心互動盆栽 */
-        .main-plant-container {
+        /* 核心焦點：位於窗台正中央的主角盆栽 */
+        .main-plant-spot {
             position: absolute;
-            bottom: 100px;
-            right: 80px;
+            bottom: 20px; /* 精準立在窗台正上方 */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
             text-align: center;
         }
 
-        .main-plant-pot {
-            font-size: 64px; /* 放大主多肉，讓看清楚成長狀態 */
+        #plantEmoji {
+            font-size: 64px; /* 放大主多肉圖示 */
             display: inline-block;
-            transition: transform 0.2s;
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.15));
         }
 
-        .pot-label {
-            background: #2c3e50;
+        .plant-tag {
+            background: #1e272e;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 2px;
+            margin-top: -5px;
+            display: inline-block;
+            border: 2px solid #fff;
+        }
+
+        /* 房間地板層（對齊手稿下半部） */
+        .room-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 25%;
+            background: #cf6a87; /* 磚紅色木地板 */
+            border-top: var(--pixel-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 25px 8px 25px;
+        }
+
+        /* 地面上的精緻像素家具物體 */
+        .floor-furniture {
+            background: #f7f1e3;
+            border: 3px solid #1e272e;
+            padding: 4px 10px;
+            font-size: 13px;
+            font-weight: bold;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bed-object {
+            background: #ff4757; /* 紅色點綴床單 */
             color: white;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-top: 5px;
-            display: inline-block;
+            border-top-left-radius: 4px;
         }
 
-        /* 🎬 像素風動畫 */
+        /* 🎬 像素低影格率生長動畫 */
         .soil-shake-animation {
-            animation: pixelShake 2.5s steps(5) infinite; /* steps 讓動畫有卡頓的像素感 */
+            animation: pixelShake 2.5s steps(4) infinite;
         }
         @keyframes pixelShake {
-            0%, 100% { transform: scale(1) translate(0, 0); }
-            20% { transform: scale(1.1) translate(-4px, -4px); }
-            40% { transform: scale(1.1) translate(4px, -4px); }
-            60% { transform: scale(1.1) translate(-4px, 4px); }
-            80% { transform: scale(1.1) translate(4px, 4px); }
+            0%, 100% { transform: scale(1) translate(0,0); }
+            25% { transform: scale(1.05) translate(-4px, -2px); }
+            50% { transform: scale(1.05) translate(4px, 2px); }
+            75% { transform: scale(1.05) translate(-2px, 4px); }
         }
 
         .leaf-grow-animation {
-            animation: pixelGrow 0.8s steps(4);
+            animation: pixelGrow 0.8s steps(3);
         }
         @keyframes pixelGrow {
             0% { transform: scale(1); }
-            50% { transform: scale(1.3) translateY(-10px); }
+            50% { transform: scale(1.3) translateY(-8px); }
             100% { transform: scale(1); }
         }
 
 
-        /* 📋 右側面板：詳細資訊卡與進度追蹤 */
-        .info-card h2 { margin: 0 0 5px 0; font-size: 22px; }
+        /* 📋 右側面板：狀態與數值進度條 */
+        .info-card h2 { margin: 0; font-size: 22px; color: #1e272e; }
         
         .plant-sub {
             font-style: italic;
             font-size: 13px;
-            color: #7f8c8d;
-            margin-bottom: 15px;
+            color: #57606f;
+            margin: 4px 0 12px 0;
         }
 
         .status-box {
-            background: #f8f9fa;
+            background: #ffffff;
             border: var(--pixel-border);
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
         }
-        .status-title { font-size: 12px; color: #7f8c8d; }
-        .status-value { font-size: 18px; font-weight: bold; }
+        .status-title { font-size: 12px; color: #747d8c; font-weight: bold; }
+        .status-value { font-size: 18px; font-weight: bold; color: #ff4757; margin-top: 2px; }
 
-        .next-box { font-size: 14px; margin-bottom: 15px; line-height: 1.6; }
-        .highlight { font-weight: bold; color: #27ae60; }
+        .next-box { font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
+        .highlight { font-weight: bold; color: #2cd666; }
 
-        /* 像素風硬邊進度條 */
+        /* 像素血條質感的進度條 */
         .progress-bar-container {
-            background: #e2e8f0;
+            background: #2c3e50;
             border: var(--pixel-border);
-            height: 24px;
+            height: 26px;
             overflow: hidden;
-            margin-bottom: 6px;
-            position: relative;
+            margin-bottom: 4px;
         }
         .progress-bar {
-            background: var(--pixel-green);
+            background: linear-gradient(to right, #2cd666, #1dd1a1);
             height: 100%;
             width: 0%;
-            transition: width 0.3s steps(10); /* 像素級跳動進度 */
+            transition: width 0.3s steps(5);
         }
-        .progress-ratio { text-align: right; font-size: 12px; font-weight: bold; }
+        .progress-ratio { text-align: right; font-size: 12px; font-weight: bold; color: #2c3e50; }
 
-        /* 右下角：成長階段追蹤列表 */
+        /* 右下角：成長階段清單 */
         .timeline-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
         .timeline-list li {
-            padding: 8px 12px;
+            padding: 8px 10px;
             margin-bottom: 6px;
-            color: #cbd5e1;
-            font-size: 14px;
-            border: 2px solid transparent;
+            color: #a4b0be;
+            font-size: 13px;
+            border-left: 4px solid #ced6e0;
         }
         .timeline-list li.active {
-            color: var(--text-color);
-            background: #e8f8f5;
+            color: #1e272e;
+            background: #fff;
             border: var(--pixel-border);
             font-weight: bold;
         }
@@ -326,64 +392,67 @@
     <div class="app-container">
         
         <div class="panel left-panel">
-            <div class="brand">🍅 Pixel Garden</div>
+            <div class="brand">🍅 PIXEL GARDEN</div>
             
             <div class="card timer-card">
-                <h2>番茄鐘</h2>
-                <div id="timer">25:00</div>
+                <div class="card-header">⏱️ TIMER CORE</div>
+                <div class="timer-screen">
+                    <div id="timer">25:00</div>
+                </div>
                 <div class="control-btns">
-                    <button id="startBtn">開始</button>
-                    <button id="resetBtn">重置</button>
+                    <button id="startBtn">START</button>
+                    <button id="resetBtn">RESET</button>
                 </div>
             </div>
             
             <div class="card stats-card">
-                <h3>專注數據統計</h3>
-                <div class="stat-line"><span>總番茄鐘</span><span id="totalPomodoros">0 個</span></div>
-                <div class="stat-line"><span>總專注時間</span><span id="totalFocusTime">0 分鐘</span></div>
-                <div class="stat-line"><span>完成植物數</span><span id="completedPlants">0 盆</span></div>
-            </div>
-            
-            <div class="card music-card">
-                <div class="music-title">🎵 lofi beats</div>
-                <div class="music-sub">chill & relax</div>
+                <div class="card-header">📊 USER DATA</div>
+                <div class="stat-line"><span>🍅 總番茄鐘</span><span id="totalPomodoros">0 個</span></div>
+                <div class="stat-line"><span>⏳ 總專注時間</span><span id="totalFocusTime">0 分鐘</span></div>
+                <div class="stat-line"><span>🏆 完成植物數</span><span id="completedPlants">0 盆</span></div>
             </div>
         </div>
 
         <div class="panel center-panel">
-            <div class="pixel-window">
-                <div class="pixel-window-sill">
-                    <div class="pixel-furniture" style="font-size: 24px;">🌵</div>
-                    <div class="pixel-furniture" style="font-size: 24px;">🌿</div>
-                    <div class="pixel-furniture" style="font-size: 24px;">🌸</div>
+            <div class="pixel-room-stage">
+                
+                <div class="pixel-window">
+                    <div class="pixel-window-sill">
+                        <div class="sill-decor">🌵</div>
+                        <div class="sill-decor">🌿</div>
+                        <div class="sill-decor" style="opacity: 0;"></div> <div class="sill-decor">🍀</div>
+                        <div class="sill-decor">🌸</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="main-plant-container">
-                <div id="plantEmoji" class="main-plant-pot">🌰</div>
-                <br>
-                <div class="pot-label">熊童子</div>
-            </div>
+                <div class="main-plant-spot">
+                    <div id="plantEmoji">🌰</div>
+                    <br>
+                    <div class="plant-tag">熊童子</div>
+                </div>
 
-            <div class="room-floor">
-                <div class="pixel-furniture">📚 <span style="font-size: 14px; background:#fff; border:2px solid #000; padding:2px;">書櫃</span></div>
-                <div class="pixel-furniture">🛏️ <span style="font-size: 14px; background:#fff; border:2px solid #000; padding:2px;">床鋪</span></div>
+                <div class="room-floor">
+                    <div class="floor-furniture">📚 書櫃</div>
+                    <div class="floor-furniture bed-object">🛏️ 雙人床</div>
+                </div>
+
             </div>
         </div>
 
         <div class="panel right-panel">
             <div class="card info-card">
+                <div class="card-header">📋 PLANT INFO</div>
                 <h2 id="plantName">熊童子</h2>
                 <div class="plant-sub">Cotyledon tomentosa</div>
                 
                 <div class="status-box">
-                    <div class="status-title">當前狀態</div>
-                    <div id="stageText" class="status-value">🌰 種子</div>
+                    <div class="status-title">CURRENT STAGE</div>
+                    <div id="stageText" class="status-value">🌰 種子狀態</div>
                 </div>
 
                 <div class="next-box">
-                    <div>下一階段：<span id="nextStageText" class="highlight">🌱 萌芽</span></div>
-                    <div class="progress-details">還需 <span id="countdownText" class="highlight">1</span> 次番茄鐘</div>
+                    <div>NEXT：<span id="nextStageText" class="highlight">🌱 萌芽</span></div>
+                    <div>還需 <span id="countdownText" class="highlight">1</span> 次專注養分</div>
                 </div>
                 
                 <div class="progress-bar-container">
@@ -393,28 +462,26 @@
             </div>
 
             <div class="card timeline-card">
-                <h3>成長階段追蹤</h3>
+                <div class="card-header">🧬 LIFE CYCLE</div>
                 <ul class="timeline-list">
-                    <li id="step0" class="active">🌰 種子 (0次)</li>
-                    <li id="step1">🌱 萌芽 (1次)</li>
-                    <li id="step3">🌿 成長 (3次)</li>
-                    <li id="step6">🌸 含苞 (6次)</li>
-                    <li id="step10">🌺 盛開 (10次)</li>
+                    <li id="step0" class="active">🌰 種子階段 (0次)</li>
+                    <li id="step1">🌱 萌芽初期 (1次)</li>
+                    <li id="step3">🌿 葉片成長 (3次)</li>
+                    <li id="step6">🌸 孕育含苞 (6次)</li>
+                    <li id="step10">🌺 完美盛開 (10次)</li>
                 </ul>
             </div>
         </div>
     </div>
 
     <script>
-        // 開發者測試模式控制 (true: 25秒測試版 / false: 25分鐘正式作業版)
-        const DEV_MODE = true; 
+        const DEV_MODE = true; // true: 25秒測試版 / false: 25分鐘正式作業版
         const START_TIME = DEV_MODE ? 25 : 1500;
 
         let timeLeft = START_TIME;
         let isRunning = false;
         let timerInterval = null;
 
-        // DOM 節點快取
         const timerDisplay = document.getElementById('timer');
         const startBtn = document.getElementById('startBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -428,15 +495,13 @@
         const totalFocusTimeDisplay = document.getElementById('totalFocusTime');
         const completedPlantsDisplay = document.getElementById('completedPlants');
 
-        // 讀取本地獨立快取
-        let data = JSON.parse(localStorage.getItem('bloomodoro_v1_flat_data')) || {
+        let data = JSON.parse(localStorage.getItem('bloomodoro_v2_flat_data')) || {
             growth: 0,
             totalPomodoros: 0,
             totalFocusTime: 0,
             completedPlants: 0
         };
 
-        // 嚴格對齊最近幾次討論的階段設定（0, 1, 3, 6, 10）
         const stages = [
             { thresh: 0, emoji: '🌰', name: '種子' },
             { thresh: 1, emoji: '🌱', name: '萌芽' },
@@ -446,14 +511,13 @@
         ];
 
         function saveStorage() {
-            localStorage.setItem('bloomodoro_v1_flat_data', JSON.stringify(data));
+            localStorage.setItem('bloomodoro_v2_flat_data', JSON.stringify(data));
         }
 
         function updateUI() {
             let currentStage = stages[0];
             let nextStage = stages[1];
 
-            // 判斷當前所屬等級
             for (let i = 0; i < stages.length; i++) {
                 if (data.growth >= stages[i].thresh) {
                     currentStage = stages[i];
@@ -461,36 +525,31 @@
                 }
             }
 
-            // 更新中央像素多肉外觀與右側狀態文字
             plantEmoji.textContent = currentStage.emoji;
             
             if (data.growth === 10) {
-                stageText.textContent = `${currentStage.emoji} 已盛開`;
+                stageText.textContent = `${currentStage.emoji} 已完美盛開`;
             } else {
                 stageText.textContent = `${currentStage.emoji} ${currentStage.name}中`;
             }
             
-            // 動態換算下一階剩餘次數
             if (nextStage) {
                 nextStageText.textContent = `${nextStage.emoji} ${nextStage.name}`;
                 let remaining = nextStage.thresh - data.growth;
                 countdownText.textContent = remaining;
             } else {
-                nextStageText.textContent = "最高階段";
+                nextStageText.textContent = "已達最高等級";
                 countdownText.textContent = "0";
             }
 
-            // 進度條換算
             progressText.textContent = `${data.growth} / 10`;
             const percentage = Math.min((data.growth / 10) * 100, 100);
             progressBar.style.width = `${percentage}%`;
 
-            // 數據統計看板
             totalPomodorosDisplay.textContent = `${data.totalPomodoros} 個`;
             totalFocusTimeDisplay.textContent = `${data.totalFocusTime} 分鐘`;
             completedPlantsDisplay.textContent = `${data.completedPlants} 盆`;
 
-            // 更新追蹤清單高亮
             stages.forEach(s => {
                 const stepElement = document.getElementById(`step${s.thresh}`);
                 if (stepElement) {
@@ -512,12 +571,12 @@
         startBtn.onclick = () => {
             if (isRunning) {
                 isRunning = false;
-                startBtn.textContent = "開始";
+                startBtn.textContent = "START";
                 startBtn.classList.remove('running');
                 clearInterval(timerInterval);
             } else {
                 isRunning = true;
-                startBtn.textContent = "暫停";
+                startBtn.textContent = "PAUSE";
                 startBtn.classList.add('running');
                 timerInterval = setInterval(handleTick, 1000);
             }
@@ -526,7 +585,7 @@
         resetBtn.onclick = () => {
             isRunning = false;
             clearInterval(timerInterval);
-            startBtn.textContent = "開始";
+            startBtn.textContent = "START";
             startBtn.classList.remove('running');
             timeLeft = START_TIME;
             renderTimer();
@@ -546,22 +605,20 @@
 
                 isRunning = false;
                 clearInterval(timerInterval);
-                startBtn.textContent = "開始";
+                startBtn.textContent = "START";
                 startBtn.classList.remove('running');
 
-                // 觸發像素風生長動畫
+                // 像素風低格率生長動畫觸發
                 if (initialGrowth === 0 && data.growth === 1) {
-                    // 種子到萌芽：劇烈晃動
-                    plantEmoji.className = 'main-plant-pot soil-shake-animation';
+                    plantEmoji.className = 'soil-shake-animation';
                     setTimeout(() => {
-                        plantEmoji.className = 'main-plant-pot';
+                        plantEmoji.className = '';
                         executeNotification();
                     }, 2500);
                 } else {
-                    // 後續升級：像素彈跳長大
-                    plantEmoji.className = 'main-plant-pot leaf-grow-animation';
+                    plantEmoji.className = 'leaf-grow-animation';
                     setTimeout(() => {
-                        plantEmoji.className = 'main-plant-pot';
+                        plantEmoji.className = '';
                         executeNotification();
                     }, 800);
                 }
@@ -575,9 +632,9 @@
 
         function executeNotification() {
             if (data.growth >= 10) {
-                alert('🎉 恭喜！你的熊童子已順利達到最終階段【🌺 盛開】！已為你記入完成盆數，點擊確定即可重新播種。');
+                alert('🎉 恭喜！你的熊童子已順利達到最高階段【🌺 盛開】！已為你記入完成盆數，點擊確定即可重新播種下一盆！');
                 data.completedPlants++;
-                data.growth = 0; // 循環重製
+                data.growth = 0;
                 saveStorage();
                 updateUI();
             } else {
@@ -585,7 +642,6 @@
             }
         }
 
-        // 初始化
         updateUI();
         renderTimer();
     </script>
