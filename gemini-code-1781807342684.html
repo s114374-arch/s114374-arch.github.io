@@ -1,3 +1,11 @@
+完全沒問題！請千萬不用道歉，裁切圖片本來就是一件很考驗眼力和耐心的工作，能自己動手處理已經非常厲害了！
+
+我已經幫你把「千兔耳」從資料庫中移除，並把「白烏帽子」的 ID 往前遞補為 8。同時，為了避免舊的存檔記憶去抓到不存在的植物，我將存檔紀錄更新為了新版本（v9），這樣系統就會乾乾淨淨地重新啟動。
+
+請直接全選並用以下程式碼覆蓋你的 index.html：
+
+💻 更新版程式碼 (9 種植物)
+HTML
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -41,26 +49,23 @@
         .stage-grow { background: rgba(102, 193, 140, 0.2); color: var(--accent-botanical); }
         .stage-bloom { background: rgba(242, 139, 130, 0.2); color: var(--accent-bloom); }
 
-        /* 🛠️ 翻轉後的 10x3 零誤差像素遮罩技術 🛠️ */
-        .pixel-sprite { 
+        /* 極簡版圖片容器 */
+        .plant-img-box { 
             width: 80px; 
             height: 80px; 
             margin: 25px auto 15px; 
-            display: block; 
-            position: relative;
-            overflow: hidden; /* 牢牢框住，不讓鄰居露出來 */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
         }
-        .pixel-sprite img {
-            position: absolute;
-            width: 1000%;  /* ✨ 10 欄 = 放大 10 倍寬 */
-            height: 300%;  /* ✨ 3 列 = 放大 3 倍高 */
-            /* 橫向移動控制多肉品種，縱向移動控制生長階段 */
-            left: calc(var(--col) * -100%);
-            top: calc(var(--row) * -100%);
+        .plant-img-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
-            pointer-events: none;
         }
+        .plant-img-large { width: 140px; height: 140px; }
 
         .progress-bar-bg { background: rgba(0,0,0,0.3); width: 100%; height: 8px; border-radius: 4px; margin-top: 15px; overflow: hidden; }
         .progress-bar-fill { background: var(--accent-botanical); height: 100%; width: 0%; transition: width 0.5s ease; }
@@ -112,8 +117,8 @@
             <div class="panel timer-panel">
                 <div id="focusStageBadge" class="stage-badge" style="position: relative; margin-bottom: 20px; left: 0; top: 0;">幼苗期</div>
                 
-                <div id="activePlantSprite" class="pixel-sprite" style="width: 140px; height: 140px; margin: 0;">
-                    <img src="plantsss.png" alt="多肉植物大圖">
+                <div class="plant-img-box plant-img-large" style="margin: 0;">
+                    <img id="activePlantImg" src="" alt="多肉植物">
                 </div>
                 
                 <div class="timer-big" id="timeDisplay">25:00</div>
@@ -155,24 +160,23 @@
     </div>
 
     <script>
-        // 🌿 多肉植物數據庫：現在 id 與 col 完全對應（0 ~ 9 欄）
+        // 🌿 更新為 9 種植物：移除了千兔耳，白烏帽子改為 id 8
         const plantDatabase = [
-            { id: 0, col: 0, name: "乙女心", sci: "Sedum pachyphyllum", origin: "墨西哥", growthTime: "約 1~2 年", target: 3, trivia: "🍬 <strong>果凍腮紅的祕密：</strong>乙女心像手指一樣肥厚的葉片，在秋冬遇到「大溫差」和充足日照時，尖端會染上像塗了腮紅般的果凍紅！這其實是它為了在高山乾旱地區保護自身、貯存水分而演化出的美麗姿態。", photo: "plant_1.jpg" },
-            { id: 1, col: 1, name: "虹之玉", sci: "Sedum rubrotinctum", origin: "墨西哥", growthTime: "約 1 年", target: 5, trivia: "🫘 <strong>伸縮自如的「植物界糖果」：</strong>因酷似亮晶晶的果凍豆（Jelly Beans）而得名。為了減少表面積、防止體內的水分蒸發，它把葉子縮成了圓滾滾的形狀。在陽光與低溫的魔法下，整株會退去綠色，轉化成令人垂涎的紅寶石色！", photo: "plant_2.jpg" },
-            { id: 2, col: 2, name: "姬秋麗", sci: "Graptopetalum mendozae", origin: "墨西哥", growthTime: "約 1 年", target: 7, trivia: "🍂 <strong>落葉歸根的超強繁殖力：</strong>姬秋麗是名副其實的「生育大師」。哪怕只是不小心碰落的一片小葉子，只要掉在土壤上（葉孵），它就能頑強地自己發根、萌芽，長成一株全新、帶有淡粉橘色光澤的完美多肉植物。", photo: "plant_3.jpg" },
-            { id: 3, col: 3, name: "桃之卵", sci: "Graptopetalum amethystinum", origin: "墨西哥", growthTime: "約 2~3 年", target: 10, trivia: "🧴 <strong>自備高級防曬霜：</strong>桃之卵擁有像粉紅鳥蛋般夢幻的圓潤葉片。仔細觀察，它表面覆蓋著一層厚厚的「白粉」（角質蠟粉）。這層粉不是灰塵，而是它對抗荒漠強烈紫外線的「天然防曬霜」，洗掉就不會再長回來囉！", photo: "plant_4.jpg" },
-            { id: 4, col: 4, name: "熊童子", sci: "Cotyledon tomentosa", origin: "南非", growthTime: "約 2~3 年", target: 12, trivia: "🐾 <strong>毛茸茸小爪子的智慧：</strong>熊童子最著名的就是那像絨毛娃娃般的「小熊掌」。這些細密的絨毛能形成微小的空氣靜止層，幫助鎖住空氣濕度，並抵禦非洲乾燥的強風。陽光曬得越好，爪子的「紅指甲」就越明顯！", photo: "plant_5.jpg" },
-            { id: 5, col: 5, name: "月美人", sci: "Pachyphytum bracteosum", origin: "墨西哥中部", growthTime: "約 2~3 年", target: 15, trivia: "🌕 <strong>月光下的鵝卵石：</strong>葉片圓潤飽滿如卵，覆蓋著濃厚白霜。這種扁平鵝卵石般的形狀有利於在自然環境中「偏轉陽光」，保持內部溫度的清涼。", photo: "plant_6.jpg" },
-            { id: 6, col: 6, name: "七福神", sci: "Echeveria secunda var. glauca", origin: "墨西哥", growthTime: "約 1~2 年", target: 18, trivia: "🌀 <strong>大自然完美的數學幾何：</strong>七福神的葉片呈現標準的完美蓮座狀。這並非隨機生長，而是精準符合數學上的「斐波那契螺旋（黃金比例）」，這種排列能確保「每一片葉子」都能曬到最大面積的陽光，互不遮擋！", photo: "plant_7.jpg" },
-            { id: 7, col: 7, name: "立方霜", sci: "Graptoveria 'Cubic Frost'", origin: "園藝交種", growthTime: "約 1~2 年", target: 20, trivia: "📐 <strong>反常規的摺紙葉片：</strong>立方霜顛覆了人們對多肉植物的印象，它的葉子是向外反捲、折疊成方形或心形的。這種獨特的管狀幾何結構，能大幅增加表面積，讓厚粉更容易附著，提供360度無視死角的耐曬保護力。", photo: "plant_8.jpg" },
-            { id: 8, col: 8, name: "千兔耳", sci: "Kalanchoe millotii", origin: "馬達加斯加", growthTime: "約 2~3 年", target: 25, trivia: "🐇 <strong>摸不透的鋸齒兔耳：</strong>它擁有像毛呢布料質館的毛茸茸葉片，邊緣帶著俏皮的微鋸齒。比起其他嬌氣的多肉，千兔耳非常耐熱耐旱，甚至能直接在葉片邊緣「直接長出」小北鼻苗，繁殖方式就像魔法一樣奇特！", photo: "plant_9.jpg" },
-            { id: 9, col: 9, name: "白烏帽子", sci: "Opuntia microdasys var. albispina", origin: "墨西哥", growthTime: "約 3~5 年", target: 30, trivia: "⚠️ <strong>可愛兔耳的「溫柔陷阱」：</strong>俗稱米老鼠仙人掌。它身上那些一點一點、看起來像棉花球的白色毛束並不是軟毛，而是成千上萬根比頭髮還細、帶倒鉤的「微型刺毛（Glochids）」。一旦風吹或用手碰，就會輕易脫落並黏附在皮膚上引起刺癢，屬於「只能遠觀」的帶刺可愛派！", photo: "plant_10.jpg" }
+            { id: 0, name: "乙女心", sci: "Sedum pachyphyllum", origin: "墨西哥", growthTime: "約 1~2 年", target: 3, trivia: "🍬 <strong>果凍腮紅的祕密：</strong>乙女心像手指一樣肥厚的葉片，在秋冬遇到「大溫差」和充足日照時，尖端會染上像塗了腮紅般的果凍紅！這其實是它為了在高山乾旱地區保護自身、貯存水分而演化出的美麗姿態。", photo: "plant_1.jpg" },
+            { id: 1, name: "虹之玉", sci: "Sedum rubrotinctum", origin: "墨西哥", growthTime: "約 1 年", target: 5, trivia: "🫘 <strong>伸縮自如的「植物界糖果」：</strong>因酷似亮晶晶的果凍豆（Jelly Beans）而得名。為了減少表面積、防止體內的水分蒸發，它把葉子縮成了圓滾滾的形狀。在陽光與低溫的魔法下，整株會退去綠色，轉化成令人垂涎的紅寶石色！", photo: "plant_2.jpg" },
+            { id: 2, name: "姬秋麗", sci: "Graptopetalum mendozae", origin: "墨西哥", growthTime: "約 1 年", target: 7, trivia: "🍂 <strong>落葉歸根的超強繁殖力：</strong>姬秋麗是名副其實的「生育大師」。哪怕只是不小心碰落的一片小葉子，只要掉在土壤上（葉孵），它就能頑強地自己發根、萌芽，長成一株全新、帶有淡粉橘色光澤的完美多肉植物。", photo: "plant_3.jpg" },
+            { id: 3, name: "桃之卵", sci: "Graptopetalum amethystinum", origin: "墨西哥", growthTime: "約 2~3 年", target: 10, trivia: "🧴 <strong>自備高級防曬霜：</strong>桃之卵擁有像粉紅鳥蛋般夢幻的圓潤葉片。仔細觀察，它表面覆蓋著一層厚厚的「白粉」（角質蠟粉）。這層粉不是灰塵，而是它對抗荒漠強烈紫外線的「天然防曬霜」，洗掉就不會再長回來囉！", photo: "plant_4.jpg" },
+            { id: 4, name: "熊童子", sci: "Cotyledon tomentosa", origin: "南非", growthTime: "約 2~3 年", target: 12, trivia: "🐾 <strong>毛茸茸小爪子的智慧：</strong>熊童子最著名的就是那像絨毛娃娃般的「小熊掌」。這些細密的絨毛能形成微小的空氣靜止層，幫助鎖住空氣濕度，並抵禦非洲乾燥的強風。陽光曬得越好，爪子的「紅指甲」就越明顯！", photo: "plant_5.jpg" },
+            { id: 5, name: "月美人", sci: "Pachyphytum bracteosum", origin: "墨西哥中部", growthTime: "約 2~3 年", target: 15, trivia: "🌕 <strong>月光下的鵝卵石：</strong>葉片圓潤飽滿如卵，覆蓋著濃厚白霜。這種扁平鵝卵石般的形狀有利於在自然環境中「偏轉陽光」，保持內部溫度的清涼。", photo: "plant_6.jpg" },
+            { id: 6, name: "七福神", sci: "Echeveria secunda var. glauca", origin: "墨西哥", growthTime: "約 1~2 年", target: 18, trivia: "🌀 <strong>大自然完美的數學幾何：</strong>七福神的葉片呈現標準的完美蓮座狀。這並非隨機生長，而是精準符合數學上的「斐波那契螺旋（黃金比例）」，這種排列能確保「每一片葉子」都能曬到最大面積的陽光，互不遮擋！", photo: "plant_7.jpg" },
+            { id: 7, name: "立方霜", sci: "Graptoveria 'Cubic Frost'", origin: "園藝交種", growthTime: "約 1~2 年", target: 20, trivia: "📐 <strong>反常規的摺紙葉片：</strong>立方霜顛覆了人們對多肉植物的印象，它的葉子是向外反捲、折疊成方形或心形的。這種獨特的管狀幾何結構，能大幅增加表面積，讓厚粉更容易附著，提供360度無視死角的耐曬保護力。", photo: "plant_8.jpg" },
+            { id: 8, name: "白烏帽子", sci: "Opuntia microdasys var. albispina", origin: "墨西哥", growthTime: "約 3~5 年", target: 30, trivia: "⚠️ <strong>可愛兔耳的「溫柔陷阱」：</strong>俗稱米老鼠仙人掌。它身上那些一點一點、看起來像棉花球的白色毛束並不是軟毛，而是成千上萬根比頭髮還細、帶倒鉤的「微型刺毛（Glochids）」。一旦風吹或用手碰，就會輕易脫落並黏附在皮膚上引起刺癢，屬於「只能遠觀」的帶刺可愛派！", photo: "plant_10.jpg" }
         ];
 
         let playerProgress;
         try {
-            // 使用新版存檔 key 避免舊髒資料干擾
-            const rawData = localStorage.getItem('pixel_garden_v7');
+            // 更新存檔版本為 v9，避免讀取到舊的 10 種植物資料而出錯
+            const rawData = localStorage.getItem('pixel_garden_v9');
             playerProgress = rawData ? JSON.parse(rawData) : null;
             if (!playerProgress || typeof playerProgress.currentActiveId !== 'number' || !playerProgress.counts) {
                 throw new Error();
@@ -185,11 +189,10 @@
         let timerId = null;
         let isTimerRunning = false;
 
-        // 🛠️ 10x3 網格下：row 0=幼苗, row 1=生長, row 2=成株
         function getPlantStageInfo(count, target) {
-            if (count === 0) return { name: "幼苗期", class: "stage-seed", row: 0 };
-            if (count >= target) return { name: "開花/成株期", class: "stage-bloom", row: 2 };
-            return { name: "生長期", class: "stage-grow", row: 1 };
+            if (count === 0) return { name: "幼苗期", class: "stage-seed", stageKey: "seed" };
+            if (count >= target) return { name: "開花/成株期", class: "stage-bloom", stageKey: "bloom" };
+            return { name: "生長期", class: "stage-grow", stageKey: "grow" };
         }
 
         function renderCatalog() {
@@ -201,13 +204,16 @@
                 const percent = Math.min((count / plant.target) * 100, 100);
                 const stage = getPlantStageInfo(count, plant.target);
                 
+                const imgSrc = `plant_${plant.id}_${stage.stageKey}.png`;
+                
                 const card = document.createElement('div');
                 card.className = `plant-card`;
                 card.innerHTML = `
                     <div style="font-size:11px; color:var(--text-muted);">目標: ${plant.target} 次</div>
+                    <div class="stage-badge ${stage.class}">${stage.name}</div>
                     
-                    <div class="pixel-sprite" style="--col: ${plant.col}; --row: ${stage.row};">
-                        <img src="plantsss.png" alt="${plant.name}">
+                    <div class="plant-img-box">
+                        <img src="${imgSrc}" alt="${plant.name}" onerror="this.src=''; this.alt='圖片缺失'">
                     </div>
                     
                     <h4 style="font-size:16px; font-weight:600; margin-bottom:2px;">${plant.name}</h4>
@@ -235,13 +241,13 @@
             const isUnlocked = count >= plant.target;
 
             document.getElementById('focusTargetLabel').textContent = `目標解鎖：${plant.target} 次`;
+            
             const badge = document.getElementById('focusStageBadge');
             badge.className = `stage-badge ${stage.class}`;
             badge.textContent = stage.name;
             
-            const activeSprite = document.getElementById('activePlantSprite');
-            activeSprite.style.setProperty('--col', plant.col);
-            activeSprite.style.setProperty('--row', stage.row);
+            const activeImg = document.getElementById('activePlantImg');
+            activeImg.src = `plant_${plant.id}_${stage.stageKey}.png`;
 
             document.getElementById('epName').textContent = plant.name;
             document.getElementById('epSci').textContent = plant.sci;
@@ -295,8 +301,8 @@
                 
                 const plant = plantDatabase[playerProgress.currentActiveId];
                 if((playerProgress.counts[plant.id] || 0) === 0) {
-                    const activeSprite = document.getElementById('activePlantSprite');
-                    activeSprite.style.setProperty('--row', 1); // 10x3 下，生長中是 row 1
+                    const activeImg = document.getElementById('activePlantImg');
+                    activeImg.src = `plant_${plant.id}_grow.png`; 
                     document.getElementById('focusStageBadge').textContent = "生長中...";
                     document.getElementById('focusStageBadge').className = "stage-badge stage-grow";
                 }
@@ -334,10 +340,10 @@
         document.getElementById('navToFocus').onclick = () => switchView('focus');
         document.getElementById('quickCheatBtn').onclick = executeSessionIncrement;
         document.getElementById('clearDataBtn').onclick = () => {
-            if(confirm("確定要清除所有進度嗎？")) { localStorage.removeItem('pixel_garden_v7'); location.reload(); }
+            if(confirm("確定要清除所有進度嗎？")) { localStorage.removeItem('pixel_garden_v9'); location.reload(); }
         };
 
-        function saveData() { localStorage.setItem('pixel_garden_v7', JSON.stringify(playerProgress)); }
+        function saveData() { localStorage.setItem('pixel_garden_v9', JSON.stringify(playerProgress)); }
 
         renderCatalog();
         loadActivePlantDetails();
