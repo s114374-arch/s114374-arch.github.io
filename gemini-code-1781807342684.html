@@ -1,3 +1,14 @@
+沒問題！換圖片和改檔名都是小事，不用抱歉啦！能找到自己最喜歡的視覺風格才是最重要的。
+
+我已經幫您把程式碼中的大圖路徑正式更新為 plantss.png 了。
+
+⚠️ 換新圖的小提醒
+因為您換了一張全新的圖片，如果這張新圖的網格數量跟上一張（3 欄 10 列）不一樣，請記得在貼上程式碼後，去修改 <style> 裡面的 --total-cols（橫向幾格）與 --total-rows（直向幾排），否則裁切又會跑版喔！
+
+💻 更新版程式碼 (已指向 plantss.png)
+請全選並複製下方這段完整的程式碼，將原本的 index.html 覆蓋並存檔即可：
+
+HTML
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -17,8 +28,8 @@
             --border-glow: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(12px);
             
-            /* 🔥 重要：這裡已更新為您指定的新檔名 plants.png 🔥 */
-            --sprite-sheet: url('plants.png'); 
+            /* 🔥 已經幫您更新為 plantss.png 🔥 */
+            --sprite-sheet: url('plantss.png'); 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -53,7 +64,7 @@
             transition: all 0.3s ease;
             background-image: var(--sprite-sheet);
             
-            /* 🔥 重要：這裡已更新為您算好的 3欄 10列 (3x10) 🔥 */
+            /* 💡 如果新圖不是 3x10，請記得修改這裡的數字 💡 */
             --total-cols: 3; 
             --total-rows: 10; 
             
@@ -121,8 +132,7 @@
 
             <div class="panel">
                 <div class="ep-header">
-                    <div class="ep-photo-box" id="epPhotoContainer">
-                        </div>
+                    <div class="ep-photo-box" id="epPhotoContainer"></div>
                     <div class="ep-title-area">
                         <div class="ep-name" id="epName">-</div>
                         <div class="ep-sci" id="epSci">-</div>
@@ -154,10 +164,8 @@
     </div>
 
     <script>
-        // 💡 重點步驟：請您貼上程式碼後，依照新圖「從上到下」的植物順序，修改下方的 name、學名等資料
-        // row: 0 代表最上面那一排，row: 1 代表第二排...row: 9 代表第十排
         const plantDatabase = [
-            { id: 0, row: 0, name: "植物 A (最上排)", sci: "學名 A", origin: "產地 A", growthTime: "約 1~2 年", target: 3, trivia: "這裡填寫植物 A 的小百科知識。", photo: "plant_1.jpg" },
+            { id: 0, row: 0, name: "植物 A", sci: "學名 A", origin: "產地 A", growthTime: "約 1~2 年", target: 3, trivia: "這裡填寫植物 A 的小百科知識。", photo: "plant_1.jpg" },
             { id: 1, row: 1, name: "植物 B", sci: "學名 B", origin: "產地 B", growthTime: "約 1 年", target: 5, trivia: "這裡填寫植物 B 的小百科知識。", photo: "plant_2.jpg" },
             { id: 2, row: 2, name: "植物 C", sci: "學名 C", origin: "產地 C", growthTime: "約 1 年", target: 7, trivia: "這裡填寫植物 C 的小百科知識。", photo: "plant_3.jpg" },
             { id: 3, row: 3, name: "植物 D", sci: "學名 D", origin: "產地 D", growthTime: "約 2~3 年", target: 10, trivia: "這裡填寫植物 D 的小百科知識。", photo: "plant_4.jpg" },
@@ -166,19 +174,17 @@
             { id: 6, row: 6, name: "植物 G", sci: "學名 G", origin: "產地 G", growthTime: "約 1~2 年", target: 18, trivia: "這裡填寫植物 G 的小百科知識。", photo: "plant_7.jpg" },
             { id: 7, row: 7, name: "植物 H", sci: "學名 H", origin: "產地 H", growthTime: "約 1~2 年", target: 20, trivia: "這裡填寫植物 H 的小百科知識。", photo: "plant_8.jpg" },
             { id: 8, row: 8, name: "植物 I", sci: "學名 I", origin: "產地 I", growthTime: "約 2~3 年", target: 25, trivia: "這裡填寫植物 I 的小百科知識。", photo: "plant_9.jpg" },
-            { id: 9, row: 9, name: "植物 J (最下排)", sci: "學名 J", origin: "產地 J", growthTime: "約 3~5 年", target: 30, trivia: "這裡填寫植物 J 的小百科知識。", photo: "plant_10.jpg" }
+            { id: 9, row: 9, name: "植物 J", sci: "學名 J", origin: "產地 J", growthTime: "約 3~5 年", target: 30, trivia: "這裡填寫植物 J 的小百科知識。", photo: "plant_10.jpg" }
         ];
 
-        // 🛡️ 修復：防呆機制讀取 localStorage
         let playerProgress;
         try {
-            const rawData = localStorage.getItem('pixel_garden_v5'); // 使用 v5 避開舊資料
+            const rawData = localStorage.getItem('pixel_garden_v5');
             playerProgress = rawData ? JSON.parse(rawData) : null;
             if (!playerProgress || typeof playerProgress.currentActiveId !== 'number' || !playerProgress.counts) {
                 throw new Error("Data corrupted");
             }
         } catch (e) {
-            // 資料有誤則重置存檔
             playerProgress = { currentActiveId: 0, counts: {} };
         }
 
@@ -186,7 +192,6 @@
         let timerId = null;
         let isTimerRunning = false;
 
-        // 🔥 重要修復：依照您的新圖 (3欄)，幼苗是 col 0, 成長是 col 1, 開花是 col 2 🔥
         function getPlantStageInfo(count, target) {
             if (count === 0) return { name: "幼苗期", class: "stage-seed", col: 0 };
             if (count >= target) return { name: "開花期", class: "stage-bloom", col: 2 };
@@ -206,9 +211,7 @@
                 card.className = `plant-card`;
                 card.innerHTML = `
                     <div style="font-size:11px; color:var(--text-muted);">目標: ${plant.target} 次</div>
-                    
                     <div class="pixel-sprite" style="--row: ${plant.row}; --col: ${stage.col};"></div>
-                    
                     <h4 style="font-size:16px; font-weight:600; margin-bottom:2px;">${plant.name}</h4>
                     <div style="font-size:12px; color:var(--text-muted);">${plant.id === playerProgress.currentActiveId ? '🟢 當前培育' : '&nbsp;'}</div>
                     <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${percent}%"></div></div>
@@ -228,7 +231,7 @@
 
         function loadActivePlantDetails() {
             const plant = plantDatabase[playerProgress.currentActiveId];
-            if (!plant) return; // 防呆
+            if (!plant) return; 
             const count = playerProgress.counts[plant.id] || 0;
             const stage = getPlantStageInfo(count, plant.target);
             const isUnlocked = count >= plant.target;
@@ -239,7 +242,6 @@
             badge.textContent = stage.name;
             
             const activeSprite = document.getElementById('activePlantSprite');
-            // 動態調整背景圖顯示的位置 (row, col)
             activeSprite.style.setProperty('--row', plant.row);
             activeSprite.style.setProperty('--col', stage.col);
 
@@ -287,11 +289,10 @@
                 btn.textContent = "暫停專注";
                 btn.classList.add('running');
                 
-                // 如果目前是幼苗(進度0)，一按下開始就先讓它變成"生長期"，更有回饋感
                 const plant = plantDatabase[playerProgress.currentActiveId];
                 if((playerProgress.counts[plant.id] || 0) === 0) {
                     const activeSprite = document.getElementById('activePlantSprite');
-                    activeSprite.style.setProperty('--col', 1); // 🔥 成長期是 col 1 🔥
+                    activeSprite.style.setProperty('--col', 1); 
                     document.getElementById('focusStageBadge').textContent = "生長中...";
                     document.getElementById('focusStageBadge').className = "stage-badge stage-grow";
                 }
@@ -334,7 +335,6 @@
 
         function saveData() { localStorage.setItem('pixel_garden_v5', JSON.stringify(playerProgress)); }
 
-        // 初始化
         renderCatalog();
         loadActivePlantDetails();
         updateTimerDisplay();
