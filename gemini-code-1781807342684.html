@@ -17,7 +17,7 @@
             --border-glow: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(12px);
             
-            /* 🔥 已經幫您更新為去背測試版的 plantsss.png 🔥 */
+            /* 🔥 重要：這裡是指向您的透明去背測試大圖 plantsss.png 🔥 */
             --sprite-sheet: url('plantsss.png'); 
         }
 
@@ -33,15 +33,18 @@
         .view-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* 圖鑑網格 */
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
         .plant-card { background: var(--bg-card); border-radius: 20px; padding: 25px 20px; border: 1px solid var(--border-glow); text-align: center; cursor: pointer; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); position: relative; overflow: hidden; }
         .plant-card:hover { transform: translateY(-5px); border-color: var(--accent-botanical); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         
+        /* 狀態標籤 */
         .stage-badge { position: absolute; top: 12px; left: 12px; font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
         .stage-seed { background: rgba(255,255,255,0.1); color: var(--text-muted); }
         .stage-grow { background: rgba(102, 193, 140, 0.2); color: var(--accent-botanical); }
         .stage-bloom { background: rgba(242, 139, 130, 0.2); color: var(--accent-bloom); }
 
+        /* CSS Sprite 自動裁切技術：已對應 3x10 網格 */
         .pixel-sprite { 
             width: 80px; 
             height: 80px; 
@@ -61,6 +64,7 @@
         .progress-bar-bg { background: rgba(0,0,0,0.3); width: 100%; height: 8px; border-radius: 4px; margin-top: 15px; overflow: hidden; }
         .progress-bar-fill { background: var(--accent-botanical); height: 100%; width: 0%; transition: width 0.5s ease; }
 
+        /* 專注艙排版 */
         .focus-split { display: grid; grid-template-columns: 4fr 6fr; gap: 30px; }
         @media (max-width: 900px) { .focus-split { grid-template-columns: 1fr; } }
         .panel { background: var(--bg-card); border-radius: 24px; padding: 40px; border: 1px solid var(--border-glow); backdrop-filter: var(--glass-blur); }
@@ -71,6 +75,7 @@
         .btn-action:hover { transform: scale(1.05); }
         .btn-action.running { background: #e07a5f; box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3); }
 
+        /* 百科面板擴充 */
         .ep-header { display: flex; gap: 20px; border-bottom: 1px solid var(--border-glow); padding-bottom: 25px; margin-bottom: 25px; align-items: center; }
         
         .ep-photo-box { width: 100px; height: 100px; border-radius: 16px; overflow: hidden; border: 2px solid var(--border-glow); background: var(--bg-inner); display: flex; align-items: center; justify-content: center; }
@@ -105,7 +110,9 @@
         <div class="focus-split" id="focusSplitWrapper">
             <div class="panel timer-panel">
                 <div id="focusStageBadge" class="stage-badge" style="position: relative; margin-bottom: 20px; left: 0; top: 0;">幼苗期</div>
+                
                 <div id="activePlantSprite" class="pixel-sprite" style="width: 140px; height: 140px; margin: 0;"></div>
+                
                 <div class="timer-big" id="timeDisplay">25:00</div>
                 <div id="focusTargetLabel" style="font-size:14px; color:var(--text-muted); margin-bottom: 25px;">目標：? 次</div>
                 <button class="btn-action" id="timerActionBtn">開始培育</button>
@@ -113,7 +120,8 @@
 
             <div class="panel">
                 <div class="ep-header">
-                    <div class="ep-photo-box" id="epPhotoContainer"></div>
+                    <div class="ep-photo-box" id="epPhotoContainer">
+                        </div>
                     <div class="ep-title-area">
                         <div class="ep-name" id="epName">-</div>
                         <div class="ep-sci" id="epSci">-</div>
@@ -131,7 +139,7 @@
 
                 <div class="ep-section">
                     <div class="ep-section-title">📖 專屬小百科</div>
-                    <div class="ep-block-box" id="epTrivia" style="color: var(--text-muted);">
+                    <div class="ep-block-box" id="epTrivia" style="color: var(--text-main); line-height: 1.8;">
                         鎖定中，完成目標後解鎖完整知識與相片。
                     </div>
                 </div>
@@ -145,27 +153,30 @@
     </div>
 
     <script>
+        // 🌿 真正升級的多肉植物資料庫與「細膩、有趣」的專屬冷知識
         const plantDatabase = [
-            { id: 0, row: 0, name: "翠綠蘆薈", sci: "Aloe vera", origin: "阿拉伯半島", growthTime: "約 3~4 年", target: 3, trivia: "💧 <strong>超強儲水力：</strong>古埃及人將蘆薈稱為「不朽之植物」。即使完全沒有土壤，它依靠肉質葉片裡儲存的豐沛水分，也能在空氣中存活很長一段時間！", photo: "plant_1.jpg" },
-            { id: 1, row: 1, name: "荒漠仙人掌", sci: "Cactaceae", origin: "美洲大陸", growthTime: "約 5~10 年", target: 5, trivia: "🌵 <strong>伸縮自如的身體：</strong>巨型仙人掌體內可以儲存高達幾千公升的水！更神奇的是，當天降甘霖時，它們的身體會像「手風琴」一樣膨脹起來吸水。", photo: "plant_2.jpg" },
-            { id: 2, row: 2, name: "變異幸運草", sci: "Trifolium repens", origin: "歐洲與中亞", growthTime: "約數個月", target: 7, trivia: "🍀 <strong>萬中選一的突變：</strong>我們常說的「四葉草」其實是白花苜蓿的罕見基因突變。在自然界中，找到四片葉子的機率大約只有一萬分之一，難怪象徵著極致的幸運！", photo: "plant_3.jpg" },
-            { id: 3, row: 3, name: "捕蠅草", sci: "Dionaea muscipula", origin: "北美洲濕地", growthTime: "約 3~5 年", target: 10, trivia: "🧮 <strong>會算數的植物：</strong>為了防止被雨滴騙了而白費力氣，捕蠅草其實會「算數」！獵物必須在 20 秒內連續觸動葉片內側的感應毛兩次，陷阱才會瞬間閉合。", photo: "plant_4.jpg" },
-            { id: 4, row: 4, name: "向日葵", sci: "Helianthus annuus", origin: "北美洲", growthTime: "約 3~4 個月", target: 12, trivia: "🌻 <strong>成熟後的堅持：</strong>只有「年輕」的向日葵會跟著太陽轉頭（向光性）。當它們成熟並開花後，就會永遠固定面向東方，用早晨的陽光溫暖花瓣來吸引蜜蜂！", photo: "plant_5.jpg" },
-            { id: 5, row: 5, name: "寧靜薰衣草", sci: "Lavandula", origin: "地中海地區", growthTime: "約 1~2 年", target: 15, trivia: "🧠 <strong>改變腦波的魔法：</strong>科學證實，薰衣草的香氣能改變人類的腦波圖，促使大腦分泌放鬆的神經傳導物。在歐洲中世紀，人們甚至會把它掛在門上來驅趕惡靈。", photo: "plant_6.jpg" },
-            { id: 6, row: 6, name: "龜背芋", sci: "Monstera deliciosa", origin: "中美洲熱帶雨林", growthTime: "約 2~3 年", target: 18, trivia: "🌪️ <strong>天然的防風洞：</strong>為什麼葉子會破洞？其實這些天然的裂孔是為了讓熱帶雨林的狂風能直接穿透，避免整株植物被連根拔起，同時也能讓陽光灑落下層的葉片。", photo: "plant_7.jpg" },
-            { id: 7, row: 7, name: "含羞草", sci: "Mimosa pudica", origin: "南美洲熱帶", growthTime: "約 1 年", target: 20, trivia: "🛡️ <strong>終極防禦姿態：</strong>葉片一碰就閉合，其實是一種聰明的防禦機制！除了能把停在上面的小蟲抖掉，還能讓自己看起來像「枯萎」了一樣，讓草食動物倒胃口。", photo: "plant_8.jpg" },
-            { id: 8, row: 8, name: "奇幻豬籠草", sci: "Nepenthes", origin: "東南亞熱帶雨林", growthTime: "約 2~4 年", target: 25, trivia: "🐸 <strong>致命的甜蜜陷阱：</strong>它們的「瓶子」邊緣極度光滑，並散發出甜美的蜜汁香氣。在某些熱帶叢林中，巨型豬籠草甚至能捕捉到青蛙或小型齧齒動物！", photo: "plant_9.jpg" },
-            { id: 9, row: 9, name: "百年橡木", sci: "Quercus", origin: "北半球溫帶", growthTime: "數十年至百年", target: 30, trivia: "🌳 <strong>萬分之一的生存戰：</strong>一棵成熟的橡木每年會掉落多達一萬顆橡實，但大約只有「萬分之一」的機率能躲過動物啃食並長成大樹，代表著極致的耐心與強大的生命力。", photo: "plant_10.jpg" }
+            { id: 0, row: 0, name: "乙女心", sci: "Sedum pachyphyllum", origin: "墨西哥", growthTime: "約 1~2 年", target: 3, trivia: "Maiden's Blush: 葉片在日照充沛且溫差大時，尖端會染上美麗的果凍紅。其實，那肥厚的葉片並非裝飾，而是為了在乾旱的高山地區储存豐沛水分生存。", photo: "plant_1.jpg" },
+            { id: 1, row: 1, name: "虹之玉", sci: "Sedum rubrotinctum", origin: "墨西哥", growthTime: "約 1 年", target: 5, trivia: "Jelly Bean Plant: 因酷似果凍豆而得名。為了減少表面積防止水分散失，它們的葉片演化成了圓潤的形狀。秋冬低溫與強光下，整株會轉變為鮮艷的深紅色。", photo: "plant_2.jpg" },
+            { id: 2, row: 2, name: "姬秋麗", sci: "Graptopetalum mendozae", origin: "墨西哥", growthTime: "約 1 年", target: 7, trivia: "Maiden's Cheek: 這個品種極容易從葉子（葉孵）繁衍出新的小生命。一片fallen leaf就可以發根、發芽，生長出完美的小植物。在日照充足時，會呈現粉橘色澤。", photo: "plant_3.jpg" },
+            { id: 3, row: 3, name: "桃之卵", sci: "Graptopetalum amethystinum", origin: "墨西哥", growthTime: "約 2~3 年", target: 10, trivia: "Epicuticular Wax: 葉片上夢幻的「白粉」並非灰塵。那是它們分泌的「角質蠟」，不僅能阻擋強烈的 UV 紫外線，還能形成防水層防止水分散失。", photo: "plant_4.jpg" },
+            { id: 4, row: 4, name: "熊童子", sci: "Cotyledon tomentosa", origin: "南非", growthTime: "約 2~3 年", target: 12, trivia: "Bear Paws: 肥厚葉片上的「細毛」能形成一層微小的靜止空氣層，鎖住濕度並減少蒸發，防止乾燥強風奪走水分。日照越足，「指甲」越紅。", photo: "plant_5.jpg" },
+            { id: 5, row: 5, name: "月美人", sci: "Pachyphytum bracteosum", origin: "墨西哥中部", growthTime: "約 2~3 年", target: 15, trivia: "Pebble Plant: 葉片圓潤飽滿如卵，覆蓋著濃厚白霜。這種扁平鵝卵石般的形狀有利於在自然環境中「偏轉陽光」，保持內部溫度的清涼。", photo: "plant_6.jpg" },
+            { id: 6, row: 6, name: "七福神", sci: "Echeveria secunda var. glauca", origin: "墨西哥", growthTime: "約 1~2 年", target: 18, trivia: "Fibonacci Spiral: 葉片呈現標準的螺旋排列。這種對稱設計在數學上稱為「斐波那契數列」，確保每片葉子都能獲得最大量的陽光，不會被上面的葉子遮擋。", photo: "plant_7.jpg" },
+            { id: 7, row: 7, name: "立方霜", sci: "Graptoveria 'Cubic Frost'", origin: "園藝交種", growthTime: "約 1~2 年", target: 20, trivia: "Sun Protection Structure: 葉片呈現獨特的管狀或反捲折疊。這種獨特結構能創造更多的表面積，讓白粉更容易附著，提供卓越的陽光保護。", photo: "plant_8.jpg" },
+            { id: 8, row: 8, name: "千兔耳", sci: "Kalanchoe millotii", origin: "馬達加斯加", growthTime: "約 2~3 年", target: 25, trivia: "Epiphyllous Plantlets: 這株植物具有獨特的「葉生植株」能力，新的小植物可以直接從葉片的邊緣長出來！這是一種極其 alien（異形般）且高效的繁殖策略。", photo: "plant_9.jpg" },
+            { id: 9, row: 9, name: "白烏帽子", sci: "Opuntia microdasys var. albispina", origin: "墨西哥", growthTime: "約 3~5 年", target: 30, trivia: "Glochids: 那些可愛的「兔耳朵」其實充滿陷阱。看起來無害的白色毛束其實是成千上萬、微小、帶鉤的「刺毛（Glochids）」。它們一旦接觸皮膚，就會容易脫落並刺入皮膚引起劇烈刺痛。", photo: "plant_10.jpg" }
         ];
 
+        // --- 防呆機制讀取 localStorage，使用 v6 避開壞資料 ---
         let playerProgress;
         try {
-            const rawData = localStorage.getItem('pixel_garden_v5');
+            const rawData = localStorage.getItem('pixel_garden_v6');
             playerProgress = rawData ? JSON.parse(rawData) : null;
             if (!playerProgress || typeof playerProgress.currentActiveId !== 'number' || !playerProgress.counts) {
                 throw new Error("Data corrupted");
             }
         } catch (e) {
+            // 資料有誤則重置存檔
             playerProgress = { currentActiveId: 0, counts: {} };
         }
 
@@ -173,6 +184,7 @@
         let timerId = null;
         let isTimerRunning = false;
 
+        // --- 依照新圖 (3欄) 對位：幼苗=0, 成長=1, 開花=2 ---
         function getPlantStageInfo(count, target) {
             if (count === 0) return { name: "幼苗期", class: "stage-seed", col: 0 };
             if (count >= target) return { name: "開花/成株期", class: "stage-bloom", col: 2 };
@@ -192,7 +204,9 @@
                 card.className = `plant-card`;
                 card.innerHTML = `
                     <div style="font-size:11px; color:var(--text-muted);">目標: ${plant.target} 次</div>
+                    
                     <div class="pixel-sprite" style="--row: ${plant.row}; --col: ${stage.col};"></div>
+                    
                     <h4 style="font-size:16px; font-weight:600; margin-bottom:2px;">${plant.name}</h4>
                     <div style="font-size:12px; color:var(--text-muted);">${plant.id === playerProgress.currentActiveId ? '🟢 當前培育' : '&nbsp;'}</div>
                     <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${percent}%"></div></div>
@@ -223,6 +237,7 @@
             badge.textContent = stage.name;
             
             const activeSprite = document.getElementById('activePlantSprite');
+            // 動態調整背景圖顯示的位置 (row, col)
             activeSprite.style.setProperty('--row', plant.row);
             activeSprite.style.setProperty('--col', stage.col);
 
@@ -238,7 +253,7 @@
             if (isUnlocked) {
                 photoContainer.innerHTML = `<img src="${plant.photo}" class="ep-real-photo" alt="真實相片">`;
                 triviaContainer.style.color = "var(--text-main)";
-                triviaContainer.style.background = "rgba(102, 193, 140, 0.1)"; 
+                triviaContainer.style.background = "rgba(102, 193, 140, 0.1)"; // 解鎖後稍微提亮背景
                 triviaContainer.style.borderColor = "rgba(102, 193, 140, 0.3)";
                 triviaContainer.innerHTML = plant.trivia;
             } else {
@@ -246,7 +261,7 @@
                 triviaContainer.style.color = "var(--text-muted)";
                 triviaContainer.style.background = "var(--bg-inner)";
                 triviaContainer.style.borderColor = "rgba(255,255,255,0.03)";
-                triviaContainer.innerHTML = `🔒 <strong>尚未解鎖</strong><br><br>這株植物似乎藏著有趣的秘密... 完成 ${plant.target} 次專注培育後，即可解鎖它的專屬圖鑑知識與真實相片。`;
+                triviaContainer.innerHTML = `🔒 <strong>尚未解鎖</strong><br><br>這株植物似乎藏著有趣的秘密... 完成 ${plant.target} 次專注培育後，即可解鎖完整、細膩的科普冷知識與真實相片。`;
             }
         }
 
@@ -279,7 +294,7 @@
                 const plant = plantDatabase[playerProgress.currentActiveId];
                 if((playerProgress.counts[plant.id] || 0) === 0) {
                     const activeSprite = document.getElementById('activePlantSprite');
-                    activeSprite.style.setProperty('--col', 1); 
+                    activeSprite.style.setProperty('--col', 1); // 培育中是 col 1
                     document.getElementById('focusStageBadge').textContent = "生長中...";
                     document.getElementById('focusStageBadge').className = "stage-badge stage-grow";
                 }
@@ -317,11 +332,12 @@
         document.getElementById('navToFocus').onclick = () => switchView('focus');
         document.getElementById('quickCheatBtn').onclick = executeSessionIncrement;
         document.getElementById('clearDataBtn').onclick = () => {
-            if(confirm("確定要清除所有進度嗎？")) { localStorage.removeItem('pixel_garden_v5'); location.reload(); }
+            if(confirm("確定要清除所有進度嗎？")) { localStorage.removeItem('pixel_garden_v6'); location.reload(); }
         };
 
-        function saveData() { localStorage.setItem('pixel_garden_v5', JSON.stringify(playerProgress)); }
+        function saveData() { localStorage.setItem('pixel_garden_v6', JSON.stringify(playerProgress)); }
 
+        // 初始化
         renderCatalog();
         loadActivePlantDetails();
         updateTimerDisplay();
