@@ -17,8 +17,8 @@
             --border-glow: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(12px);
             
-            /* CSS Sprite 大圖的路徑，請確認檔名與您的圖片一致 */
-            --sprite-sheet: url('4c4734bb-68c6-41f2-8f29-bdfa88dfeb2f.png'); 
+            /* 這裡已更新為您最新上傳的大圖檔名 */
+            --sprite-sheet: url('edited-image.png'); 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -44,7 +44,7 @@
         .stage-grow { background: rgba(102, 193, 140, 0.2); color: var(--accent-botanical); }
         .stage-bloom { background: rgba(242, 139, 130, 0.2); color: var(--accent-bloom); }
 
-        /* 🔥 神奇的 CSS Sprite 自動裁切技術 🔥 */
+        /* CSS Sprite 自動裁切技術 */
         .pixel-sprite { 
             width: 80px; 
             height: 80px; 
@@ -52,9 +52,7 @@
             display: block; 
             transition: all 0.3s ease;
             background-image: var(--sprite-sheet);
-            /* 假設圖片有 8 個欄位(含文字), 10 個橫列。放大比例來裁切 */
             background-size: 800% 1000%; 
-            /* 透過 CSS 變數動態決定要顯示哪個座標的圖案 */
             background-position: calc(var(--col) * 100% / 7) calc(var(--row) * 100% / 9);
             image-rendering: pixelated;
         }
@@ -76,7 +74,6 @@
         /* 百科面板擴充 */
         .ep-header { display: flex; gap: 20px; border-bottom: 1px solid var(--border-glow); padding-bottom: 25px; margin-bottom: 25px; align-items: center; }
         
-        /* 真實相片區塊 */
         .ep-photo-box { width: 100px; height: 100px; border-radius: 16px; overflow: hidden; border: 2px solid var(--border-glow); background: var(--bg-inner); display: flex; align-items: center; justify-content: center; }
         .ep-real-photo { width: 100%; height: 100%; object-fit: cover; }
         .photo-locked { color: var(--text-muted); font-size: 24px; }
@@ -109,9 +106,7 @@
         <div class="focus-split" id="focusSplitWrapper">
             <div class="panel timer-panel">
                 <div id="focusStageBadge" class="stage-badge" style="position: relative; margin-bottom: 20px; left: 0; top: 0;">幼苗期</div>
-                
                 <div id="activePlantSprite" class="pixel-sprite" style="width: 140px; height: 140px; margin: 0;"></div>
-                
                 <div class="timer-big" id="timeDisplay">25:00</div>
                 <div id="focusTargetLabel" style="font-size:14px; color:var(--text-muted); margin-bottom: 25px;">目標：? 次</div>
                 <button class="btn-action" id="timerActionBtn">開始培育</button>
@@ -119,8 +114,7 @@
 
             <div class="panel">
                 <div class="ep-header">
-                    <div class="ep-photo-box" id="epPhotoContainer">
-                        </div>
+                    <div class="ep-photo-box" id="epPhotoContainer"></div>
                     <div class="ep-title-area">
                         <div class="ep-name" id="epName">-</div>
                         <div class="ep-sci" id="epSci">-</div>
@@ -152,25 +146,23 @@
     </div>
 
     <script>
-        // 1. 知識庫（擴充至 10 種，並加入原產地與成株時間）
-        // 說明：row 代表在大圖中的第幾列(0-9)
+        // 知識庫更新：10 種多肉植物，配對 plant_1.jpg 到 plant_10.jpg
         const plantDatabase = [
-            { id: 0, row: 0, name: "乙女心", sci: "Sedum pachyphyllum", origin: "墨西哥", growthTime: "約 1~2 年", target: 3, trivia: "葉片在陽光充足且溫差大時，尖端會染上美麗的果凍紅，像是少女害羞的臉頰。非常耐旱，是多肉新手的最愛。", photo: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=400&q=80" },
-            { id: 1, row: 1, name: "虹之玉", sci: "Sedum rubrotinctum", origin: "墨西哥", growthTime: "約 1 年", target: 5, trivia: "又稱聖誕快樂，秋冬低溫與強光下，整株會從綠色轉變為鮮艷的深紅色，宛如紅寶石。", photo: "https://images.unsplash.com/photo-1446071103084-c257b5f70672?w=400&q=80" },
-            { id: 2, row: 2, name: "姬秋麗", sci: "Graptopetalum bernalense", origin: "墨西哥", growthTime: "約 1 年", target: 7, trivia: "繁殖力極強，葉片小巧密集。日照充足時會呈現夢幻的粉橘色澤，容易長成滿滿的一大盆。", photo: "https://images.unsplash.com/photo-1459156212016-c812468e2115?w=400&q=80" },
-            { id: 3, row: 3, name: "桃之卵", sci: "Graptopetalum 'Peach Pride'", origin: "墨西哥", growthTime: "約 2~3 年", target: 10, trivia: "葉片圓潤如卵，表面披有一層厚厚的白粉。在極度限水與日照下，會呈現夢幻的粉紫或粉紅色。", photo: "https://images.unsplash.com/photo-1520302630592-fac600f84cb3?w=400&q=80" },
-            { id: 4, row: 4, name: "嬰兒手指", sci: "Sedum 'Baby Fingers'", origin: "墨西哥", growthTime: "約 2~3 年", target: 12, trivia: "葉片短小圓潤，形似嬰兒胖嘟嘟的手指。光照充足時葉端會泛紅，帶有淡淡的甜香味。", photo: "https://images.unsplash.com/photo-1491147334573-44cbb4602074?w=400&q=80" },
-            { id: 5, row: 5, name: "月美人", sci: "Pachyphytum oviferum", origin: "墨西哥中部", growthTime: "約 2~3 年", target: 15, trivia: "葉片肥厚飽滿，表層覆蓋濃厚的白霜，外觀呈現粉藍色至淡紫色，如同月光下的卵石。", photo: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&q=80" },
-            { id: 6, row: 6, name: "圓葉黃金景天", sci: "Sedum makinoi 'Ogon'", origin: "日本", growthTime: "約 6 個月", target: 18, trivia: "葉片迷你且密集，呈現明亮的黃綠色至金黃色。生長迅速，常被用作多肉拼盆的鋪底植物。", photo: "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=400&q=80" },
-            { id: 7, row: 7, name: "熊童子", sci: "Cotyledon tomentosa", origin: "南非", growthTime: "約 2~3 年", target: 20, trivia: "全株披滿細緻的絨毛，葉端有暗紅色的爪狀突起，外型極度酷似小熊的腳掌，極具療癒感。", photo: "https://images.unsplash.com/photo-1491147334573-44cbb4602074?w=400&q=80" }, /* 暫代照片 */
-            { id: 8, row: 8, name: "金手指", sci: "Mammillaria bocasana", origin: "墨西哥", growthTime: "約 3~5 年", target: 25, trivia: "外型如手指般群生，表面佈滿金黃色的細刺，會開出精緻的小花。非常耐旱，忌盆土積水。", photo: "https://images.unsplash.com/photo-1508022057371-4f937727e44d?w=400&q=80" },
-            { id: 9, row: 9, name: "圓葉山烏龜", sci: "Stephania erecta", origin: "泰國、東南亞", growthTime: "約 3~5 年", target: 30, trivia: "屬於塊根植物，底部有巨大如烏龜殼的塊莖，會長出優雅的圓形葉片，是極具設計感的室內植物。", photo: "https://images.unsplash.com/photo-1599421487843-176840d21eaf?w=400&q=80" }
+            { id: 0, row: 0, name: "乙女心", sci: "Sedum pachyphyllum", origin: "墨西哥", growthTime: "約 1~2 年", target: 3, trivia: "葉片在陽光充足且溫差大時，尖端會染上美麗的果凍紅，像是少女害羞的臉頰。非常耐旱，是多肉新手的最愛。", photo: "plant_1.jpg" },
+            { id: 1, row: 1, name: "虹之玉", sci: "Sedum rubrotinctum", origin: "墨西哥", growthTime: "約 1 年", target: 5, trivia: "又稱聖誕快樂，秋冬低溫與強光下，整株會從綠色轉變為鮮艷的深紅色，宛如紅寶石。", photo: "plant_2.jpg" },
+            { id: 2, row: 2, name: "姬秋麗", sci: "Graptopetalum bernalense", origin: "墨西哥", growthTime: "約 1 年", target: 7, trivia: "繁殖力極強，葉片小巧密集。日照充足時會呈現夢幻的粉橘色澤，容易長成滿滿的一大盆。", photo: "plant_3.jpg" },
+            { id: 3, row: 3, name: "桃之卵", sci: "Graptopetalum 'Peach Pride'", origin: "墨西哥", growthTime: "約 2~3 年", target: 10, trivia: "葉片圓潤如卵，表面披有一層厚厚的白粉。在極度限水與日照下，會呈現夢幻的粉紫或粉紅色。", photo: "plant_4.jpg" },
+            { id: 4, row: 4, name: "熊童子", sci: "Cotyledon tomentosa", origin: "南非", growthTime: "約 2~3 年", target: 12, trivia: "全株披滿細緻的絨毛，葉端有暗紅色的爪狀突起，外型極度酷似小熊的腳掌，極具療癒感。", photo: "plant_5.jpg" },
+            { id: 5, row: 5, name: "月美人", sci: "Pachyphytum oviferum", origin: "墨西哥中部", growthTime: "約 2~3 年", target: 15, trivia: "葉片肥厚飽滿，表層覆蓋濃厚的白霜，外觀呈現粉藍色至淡紫色，如同月光下的卵石。", photo: "plant_6.jpg" },
+            { id: 6, row: 6, name: "七福神", sci: "Echeveria secunda var. glauca", origin: "墨西哥", growthTime: "約 1~2 年", target: 18, trivia: "經典的擬石蓮花屬多肉，葉片呈標準的蓮座狀排列，帶有粉藍綠色，葉緣在日照充足時會泛紅，強健好養。", photo: "plant_7.jpg" },
+            { id: 7, row: 7, name: "立方霜", sci: "Graptoveria 'Cubic Frost'", origin: "園藝交種", growthTime: "約 1~2 年", target: 20, trivia: "葉片呈現獨特的管狀或反捲折疊，帶有濃厚的白霜與夢幻的丁香紫粉色，生長迅速且容易群生。", photo: "plant_8.jpg" },
+            { id: 8, row: 8, name: "千兔耳", sci: "Kalanchoe millotii", origin: "馬達加斯加", growthTime: "約 2~3 年", target: 25, trivia: "葉片佈滿白色的絨毛，邊緣有鋸齒狀缺刻，摸起來像毛茸茸的兔耳朵，不僅耐旱也相對耐陰。", photo: "plant_9.jpg" },
+            { id: 9, row: 9, name: "白烏帽子", sci: "Opuntia microdasys var. albispina", origin: "墨西哥", growthTime: "約 3~5 年", target: 30, trivia: "外型像米老鼠的耳朵，表面長滿白色的星芒狀短刺。雖然看起來可愛，但小刺容易扎進皮膚，需小心觸碰。", photo: "plant_10.jpg" }
         ];
 
-        // 初始化存檔
         let playerProgress = { currentActiveId: 0, counts: {} };
         try {
-            const raw = localStorage.getItem('pixel_garden_v3');
+            const raw = localStorage.getItem('pixel_garden_v4');
             if(raw) playerProgress = JSON.parse(raw);
         } catch(e) {}
 
@@ -178,15 +170,12 @@
         let timerId = null;
         let isTimerRunning = false;
 
-        // 取得 Sprite 圖片的對應欄位 (col: 0 是文字, 1 是剛發芽, 3 是成長期, 6 是開花期)
-        // 您可以依照大圖的實際排版微調這裡的 1, 3, 6 數字
         function getPlantStageInfo(count, target) {
             if (count === 0) return { name: "幼苗期", class: "stage-seed", col: 1 };
             if (count >= target) return { name: "開花期", class: "stage-bloom", col: 6 };
             return { name: "生長期", class: "stage-grow", col: 3 };
         }
 
-        // 渲染圖鑑網格
         function renderCatalog() {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
@@ -218,14 +207,12 @@
             });
         }
 
-        // 載入專注艙細節
         function loadActivePlantDetails() {
             const plant = plantDatabase[playerProgress.currentActiveId];
             const count = playerProgress.counts[plant.id] || 0;
             const stage = getPlantStageInfo(count, plant.target);
             const isUnlocked = count >= plant.target;
 
-            // 專注區更新
             document.getElementById('focusTargetLabel').textContent = `目標解鎖：${plant.target} 次`;
             const badge = document.getElementById('focusStageBadge');
             badge.className = `stage-badge ${stage.class}`;
@@ -235,14 +222,12 @@
             activeSprite.style.setProperty('--row', plant.row);
             activeSprite.style.setProperty('--col', stage.col);
 
-            // 百科區更新
             document.getElementById('epName').textContent = plant.name;
             document.getElementById('epSci').textContent = plant.sci;
             document.getElementById('epOrigin').textContent = plant.origin;
             document.getElementById('epGrowthTime').textContent = plant.growthTime;
             document.getElementById('epStatCount').textContent = `${count} 次`;
             
-            // 相片解鎖邏輯：未解鎖時直接顯示問號，解鎖後才顯示 <img> 標籤
             const photoContainer = document.getElementById('epPhotoContainer');
             if (isUnlocked) {
                 photoContainer.innerHTML = `<img src="${plant.photo}" class="ep-real-photo" alt="真實相片">`;
@@ -255,7 +240,6 @@
             }
         }
 
-        // --- 以下為計時器與控制邏輯 ---
         function updateTimerDisplay() {
             let m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
             let s = String(timeLeft % 60).padStart(2, '0');
@@ -285,7 +269,7 @@
                 const plant = plantDatabase[playerProgress.currentActiveId];
                 if((playerProgress.counts[plant.id] || 0) === 0) {
                     const activeSprite = document.getElementById('activePlantSprite');
-                    activeSprite.style.setProperty('--col', 3); // 馬上切換到生長期的座標
+                    activeSprite.style.setProperty('--col', 3);
                     document.getElementById('focusStageBadge').textContent = "生長中...";
                     document.getElementById('focusStageBadge').className = "stage-badge stage-grow";
                 }
@@ -323,10 +307,10 @@
         document.getElementById('navToFocus').onclick = () => switchView('focus');
         document.getElementById('quickCheatBtn').onclick = executeSessionIncrement;
         document.getElementById('clearDataBtn').onclick = () => {
-            if(confirm("確定要清除所有進度嗎？")) { localStorage.removeItem('pixel_garden_v3'); location.reload(); }
+            if(confirm("確定要清除所有進度嗎？")) { localStorage.removeItem('pixel_garden_v4'); location.reload(); }
         };
 
-        function saveData() { localStorage.setItem('pixel_garden_v3', JSON.stringify(playerProgress)); }
+        function saveData() { localStorage.setItem('pixel_garden_v4', JSON.stringify(playerProgress)); }
 
         renderCatalog();
         loadActivePlantDetails();
