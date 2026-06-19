@@ -6,197 +6,188 @@
     <title>Pixel Garden - Focus Hub</title>
     <style>
         :root {
-            --bg-base: #1e222b;
-            --bg-card: #282c37;
-            --bg-inner: #1a1d24;
+            --bg-base: #14171c;
+            --bg-gradient: linear-gradient(135deg, #1e222b 0%, #14171c 100%);
+            --bg-card: rgba(40, 44, 55, 0.6);
+            --bg-inner: rgba(26, 29, 36, 0.8);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --accent-botanical: #52b788;
-            --accent-coral: #e07a5f;
-            --border-glow: #3e4453;
+            --accent-botanical: #66c18c;
+            --accent-bloom: #f28b82;
+            --border-glow: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(12px);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+        body { background: var(--bg-gradient); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
 
         .nav-bar { display: flex; gap: 15px; margin-bottom: 30px; width: 100%; max-width: 1100px; }
-        .nav-btn { background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border-glow); padding: 12px 24px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .nav-btn.active { background: var(--accent-botanical); color: var(--bg-base); border-color: var(--accent-botanical); }
+        .nav-btn { background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border-glow); padding: 12px 24px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); }
+        .nav-btn:hover { background: rgba(102, 193, 140, 0.1); color: var(--text-main); }
+        .nav-btn.active { background: var(--accent-botanical); color: #fff; border-color: var(--accent-botanical); box-shadow: 0 4px 15px rgba(102, 193, 140, 0.3); }
 
-        .view-content { width: 100%; max-width: 1100px; display: none; }
+        .view-content { width: 100%; max-width: 1100px; display: none; animation: fadeIn 0.4s ease; }
         .view-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* 圖鑑網格 */
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .plant-card { background: var(--bg-card); border-radius: 16px; padding: 20px; border: 1px solid var(--border-glow); text-align: center; cursor: pointer; transition: transform 0.2s; }
-        .plant-card:hover { transform: translateY(-4px); border-color: var(--accent-botanical); }
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .plant-card { background: var(--bg-card); border-radius: 20px; padding: 25px 20px; border: 1px solid var(--border-glow); text-align: center; cursor: pointer; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); position: relative; overflow: hidden; }
+        .plant-card:hover { transform: translateY(-5px); border-color: var(--accent-botanical); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         
-        /* 🎨 像素圖專屬設定：確保放大不模糊，維持鋸齒邊緣 */
-        .pixel-sprite {
-            width: 90px; 
-            height: 90px; 
-            object-fit: contain; 
-            image-rendering: pixelated; /* 像素風核心屬性 */
-            margin: 15px auto; 
-            display: block;
-            transition: all 0.3s ease;
-        }
-        /* 鎖定狀態的黑影效果 */
-        .locked-silhouette {
-            filter: brightness(0) invert(0.3); /* 變成深灰色剪影 */
-            opacity: 0.7;
-        }
+        /* 狀態標籤 */
+        .stage-badge { position: absolute; top: 12px; left: 12px; font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+        .stage-seed { background: rgba(255,255,255,0.1); color: var(--text-muted); }
+        .stage-grow { background: rgba(102, 193, 140, 0.2); color: var(--accent-botanical); }
+        .stage-bloom { background: rgba(242, 139, 130, 0.2); color: var(--accent-bloom); }
 
-        .progress-bar-bg { background: var(--bg-inner); width: 100%; height: 6px; border-radius: 3px; margin-top: 12px; overflow: hidden; }
-        .progress-bar-fill { background: var(--accent-botanical); height: 100%; width: 0%; transition: width 0.3s; }
+        /* 像素圖 */
+        .pixel-sprite { width: 80px; height: 80px; object-fit: contain; image-rendering: pixelated; margin: 25px auto 15px; display: block; transition: all 0.3s ease; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.3); width: 100%; height: 8px; border-radius: 4px; margin-top: 15px; overflow: hidden; }
+        .progress-bar-fill { background: var(--accent-botanical); height: 100%; width: 0%; transition: width 0.5s ease; }
 
         /* 專注艙排版 */
-        .focus-split { display: grid; grid-template-columns: 4fr 6fr; gap: 30px; min-height: 600px; }
+        .focus-split { display: grid; grid-template-columns: 4fr 6fr; gap: 30px; }
         @media (max-width: 900px) { .focus-split { grid-template-columns: 1fr; } }
-        .panel { background: var(--bg-card); border-radius: 20px; padding: 40px; border: 1px solid var(--border-glow); display: flex; flex-direction: column; }
+        .panel { background: var(--bg-card); border-radius: 24px; padding: 40px; border: 1px solid var(--border-glow); backdrop-filter: var(--glass-blur); }
         
-        .timer-panel { align-items: center; justify-content: center; text-align: center; }
-        .timer-big { font-size: 80px; font-weight: 200; font-family: monospace; color: var(--accent-coral); margin: 20px 0; }
-        .btn-action { background: var(--text-main); color: var(--bg-base); border: none; padding: 14px 45px; font-size: 16px; font-weight: 700; border-radius: 40px; cursor: pointer; }
-        
-        /* 專注艙內的放大版像素圖 */
-        .focus-pixel-display {
-            width: 150px;
-            height: 150px;
-            image-rendering: pixelated;
-            margin-bottom: 20px;
-        }
+        .timer-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; }
+        .timer-big { font-size: 85px; font-weight: 200; font-family: 'Courier New', monospace; color: var(--text-main); margin: 25px 0; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        .btn-action { background: var(--accent-botanical); color: #fff; border: none; padding: 16px 50px; font-size: 18px; font-weight: 700; border-radius: 40px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(102, 193, 140, 0.3); }
+        .btn-action:hover { transform: scale(1.05); }
+        .btn-action.running { background: #e07a5f; box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3); }
 
-        .encyclopedia-panel { justify-content: flex-start; }
-        .ep-header { border-bottom: 1px solid var(--border-glow); padding-bottom: 20px; margin-bottom: 25px; }
-        .ep-title-row { display: flex; justify-content: space-between; align-items: baseline; }
-        .ep-name { font-size: 32px; font-weight: 700; color: var(--text-main); }
-        .ep-sci { font-size: 16px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
-        .ep-status { font-size: 13px; padding: 4px 12px; border-radius: 20px; background: var(--bg-inner); color: var(--accent-coral); }
+        /* 百科面板擴充 */
+        .ep-header { display: flex; gap: 20px; border-bottom: 1px solid var(--border-glow); padding-bottom: 25px; margin-bottom: 25px; }
+        .ep-real-photo { width: 100px; height: 100px; border-radius: 16px; object-fit: cover; border: 2px solid var(--border-glow); }
+        .ep-title-area { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .ep-name { font-size: 32px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+        .ep-sci { font-size: 15px; color: var(--text-muted); font-style: italic; }
+        
         .ep-section { margin-bottom: 24px; }
-        .ep-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 10px; font-weight: 700; }
-        .ep-block-box { background: var(--bg-inner); padding: 20px; border-radius: 12px; font-size: 15px; line-height: 1.7; }
+        .ep-section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .ep-block-box { background: var(--bg-inner); padding: 20px; border-radius: 16px; font-size: 15px; line-height: 1.7; border: 1px solid rgba(255,255,255,0.03); }
+        
         .attribute-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .attr-item span { color: var(--text-muted); font-size: 13px; display: block; margin-bottom: 2px; }
+        .attr-item span { color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .attr-item strong { font-size: 16px; color: var(--text-main); }
-
-        .unlocked-state .ep-status { color: var(--accent-botanical); }
+        
+        .care-tips { color: #81b29a; font-weight: 500; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="nav-bar">
-        <button class="nav-btn active" id="navToCatalog">📖 植物圖鑑總覽</button>
-        <button class="nav-btn" id="navToFocus">⏱️ 當前專注艙</button>
+        <button class="nav-btn active" id="navToCatalog">📖 溫室圖鑑</button>
+        <button class="nav-btn" id="navToFocus">⏱️ 專注培育艙</button>
     </div>
 
+    <!-- 視圖一：圖鑑總覽 -->
     <div class="view-content active" id="viewCatalog">
         <div class="catalog-grid" id="catalogGrid"></div>
     </div>
 
+    <!-- 視圖二：專注艙 -->
     <div class="view-content" id="viewFocus">
         <div class="focus-split" id="focusSplitWrapper">
+            <!-- 左側計時器 -->
             <div class="panel timer-panel">
-                <img id="activePlantImage" src="" class="focus-pixel-display" alt="Plant">
-                <div class="timer-label" id="activePlantLabel" style="font-size:14px; letter-spacing:2px; color:var(--text-muted);">當前培育：-</div>
+                <div id="focusStageBadge" class="stage-badge" style="position: relative; margin-bottom: 20px; left: 0; top: 0;">幼苗期</div>
+                <img id="activePlantImage" src="" class="pixel-sprite" style="width: 140px; height: 140px; margin: 0;" alt="Plant">
                 <div class="timer-big" id="timeDisplay">25:00</div>
-                <button class="btn-action" id="timerActionBtn">START</button>
+                <div id="focusTargetLabel" style="font-size:14px; color:var(--text-muted); margin-bottom: 25px;">目標：? 次</div>
+                <button class="btn-action" id="timerActionBtn">開始培育</button>
             </div>
 
-            <div class="panel encyclopedia-panel">
+            <!-- 右側植物百科 -->
+            <div class="panel">
                 <div class="ep-header">
-                    <div class="ep-title-row">
+                    <img id="epRealPhoto" src="" class="ep-real-photo" alt="真實相片">
+                    <div class="ep-title-area">
                         <div class="ep-name" id="epName">-</div>
-                        <div class="ep-status" id="epStatus">未解鎖</div>
+                        <div class="ep-sci" id="epSci">-</div>
                     </div>
-                    <div class="ep-sci" id="epSci">-</div>
                 </div>
 
                 <div class="ep-section">
-                    <div class="ep-section-title">① 基本資料</div>
+                    <div class="ep-section-title">🪴 培育資訊</div>
                     <div class="ep-block-box attribute-grid">
                         <div class="attr-item"><span>科屬</span><strong id="epFamily">-</strong></div>
-                        <div class="attr-item"><span>原產地</span><strong id="epOrigin">-</strong></div>
+                        <div class="attr-item"><span>累積時數</span><strong id="epStatCount">0 次</strong></div>
                     </div>
+                    <div class="ep-block-box care-tips" id="epCare" style="margin-top: 10px;">-</div>
                 </div>
 
                 <div class="ep-section">
-                    <div class="ep-section-title">② 項目小知識</div>
+                    <div class="ep-section-title">📖 植物百科</div>
                     <div class="ep-block-box" id="epTrivia" style="color: var(--text-muted);">
-                        鎖定中，完成所需專注次數後解鎖完整科普知識。
-                    </div>
-                </div>
-
-                <div class="ep-section">
-                    <div class="ep-section-title">③ 玩家育成成就</div>
-                    <div class="ep-block-box attribute-grid">
-                        <div class="attr-item"><span>當前累積專注</span><strong id="epStatCount">0 次</strong></div>
-                        <div class="attr-item"><span>所需解鎖門檻</span><strong id="epStatTarget">0 次</strong></div>
+                        鎖定中，完成目標後解鎖完整知識。
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div style="width:100%; max-width:1100px; margin-top:20px; text-align:right;">
-        <button id="quickCheatBtn" style="background:transparent; color:var(--text-muted); border:none; cursor:pointer;">⚡ [測試快進] 完成 1 次專注</button>
-        <button id="clearDataBtn" style="background:transparent; color:#e07a5f; border:none; cursor:pointer; margin-left:15px;">🗑️ 清除所有存檔</button>
+    <!-- 測試區 -->
+    <div style="width:100%; max-width:1100px; margin-top:30px; text-align:right;">
+        <button id="quickCheatBtn" style="background:transparent; color:var(--text-muted); border:1px solid var(--border-glow); padding: 5px 10px; border-radius: 5px; cursor:pointer;">⚡ 測試：+1 次專注</button>
+        <button id="clearDataBtn" style="background:transparent; color:var(--accent-bloom); border:1px solid var(--border-glow); padding: 5px 10px; border-radius: 5px; cursor:pointer; margin-left:10px;">🗑️ 重置存檔</button>
     </div>
 
     <script>
-        // 1. 知識庫（請將 image 屬性替換為您本地的圖檔名稱）
+        // 內建的 SVG 預設圖 (解決沒有圖片時的灰框問題)
+        const svgSeed = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 80 C30 80, 40 50, 50 50 C60 50, 70 80, 50 80' fill='%238f9779'/><rect x='45' y='80' width='10' height='10' fill='%238b5a2b'/></svg>`;
+        const svgGrow = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 80 C20 60, 20 30, 50 40 C80 30, 80 60, 50 80' fill='%2366c18c'/><rect x='40' y='80' width='20' height='15' fill='%238b5a2b'/></svg>`;
+        const svgBloom = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='25' r='15' fill='%23f28b82'/><path d='M50 80 C20 60, 20 40, 50 40 C80 40, 80 60, 50 80' fill='%2366c18c'/><rect x='40' y='80' width='20' height='15' fill='%238b5a2b'/></svg>`;
+
+        // 1. 知識庫（已替換為您的多肉植物）
         const plantDatabase = [
-            { id: 0, name: "黃金葛", sci: "Epipremnum aureum", family: "天南星科", origin: "所羅門群島", target: 3, trivia: "極其耐陰且生長迅速，能有效淨化空氣。", image: "plant_0.png" },
-            { id: 1, name: "空氣鳳梨", sci: "Tillandsia", family: "鳳梨科", origin: "中南美洲", target: 5, trivia: "不需泥土，僅靠葉片絨毛吸收空氣水分。", image: "plant_1.png" },
-            { id: 2, name: "條紋十二卷", sci: "Haworthiopsis fasciata", family: "阿福花科", origin: "南非", target: 7, trivia: "葉片如鷹爪，有規律白紋，極度耐旱。", image: "plant_2.png" },
-            { id: 3, name: "熊童子", sci: "Cotyledon tomentosa", family: "景天科", origin: "南非", target: 10, trivia: "葉尖有紅色鋸齒，外型極像熊掌。", image: "plant_3.png" },
-            { id: 4, name: "虎尾蘭", sci: "Sansevieria trifasciata", family: "天門冬科", origin: "非洲西部", target: 12, trivia: "夜間可吸收二氧化碳並釋放氧氣。", image: "plant_4.png" },
-            { id: 5, name: "薄荷", sci: "Mentha", family: "唇形科", origin: "地中海", target: 15, trivia: "具清新香氣，生長極度強勢。", image: "plant_5.png" },
-            { id: 6, name: "鹿角蕨", sci: "Platycerium", family: "水龍骨科", origin: "熱帶雨林", target: 18, trivia: "附生綠植，孢子葉外型酷似鹿角。", image: "plant_6.png" },
-            { id: 7, name: "仙人掌", sci: "Cactaceae", family: "仙人掌科", origin: "美洲沙漠", target: 20, trivia: "葉片退化為刺以減少水分蒸發。", image: "plant_7.png" },
-            { id: 8, name: "龜背芋", sci: "Monstera deliciosa", family: "天南星科", origin: "墨西哥", target: 25, trivia: "成熟葉片自然形成羽狀裂口與孔洞。", image: "plant_8.png" },
-            { id: 9, name: "琴葉榕", sci: "Ficus lyrata", family: "桑科", origin: "非洲西海岸", target: 30, trivia: "葉片形似小提琴，具皮革質感。", image: "plant_9.png" }
+            { id: 0, name: "乙女心", sci: "Sedum pachyphyllum", family: "景天科", target: 3, trivia: "葉片在陽光充足且溫差大時，尖端會染上美麗的果凍紅，像是少女害羞的臉頰。", care: "☀️ 喜全日照 | 💧 乾透才澆透", photo: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=400&q=80", stages: ["p0_s1.png", "p0_s2.png", "p0_s3.png"] },
+            { id: 1, name: "虹之玉", sci: "Sedum rubrotinctum", family: "景天科", target: 5, trivia: "又稱聖誕快樂，秋冬低溫時整株會變成鮮艷的深紅色。", care: "☀️ 需充足日照 | 💧 忌盆土積水", photo: "https://images.unsplash.com/photo-1446071103084-c257b5f70672?w=400&q=80", stages: ["p1_s1.png", "p1_s2.png", "p1_s3.png"] },
+            { id: 2, name: "姬秋麗", sci: "Graptopetalum bernalense", family: "景天科", target: 7, trivia: "繁殖力極強，葉片小巧密集，日照充足時會呈現粉橘色澤。", care: "☀️ 全日照 | 💧 極度耐旱", photo: "https://images.unsplash.com/photo-1459156212016-c812468e2115?w=400&q=80", stages: ["p2_s1.png", "p2_s2.png", "p2_s3.png"] },
+            { id: 3, name: "桃之卵", sci: "Graptopetalum 'Peach Pride'", family: "景天科", target: 10, trivia: "葉片圓潤如卵，披有一層白粉，呈現夢幻的粉紫或粉紅色。", care: "☀️ 喜陽光 | 💧 避免淋雨掉粉", photo: "https://images.unsplash.com/photo-1520302630592-fac600f84cb3?w=400&q=80", stages: ["p3_s1.png", "p3_s2.png", "p3_s3.png"] },
+            { id: 4, name: "熊童子", sci: "Cotyledon tomentosa", family: "景天科", target: 12, trivia: "披有絨毛的葉片肥厚，尖端有暗紅色的突起，外型極度酷似熊掌。", care: "☀️ 略遮陰 | 💧 忌悶熱潮濕", photo: "https://images.unsplash.com/photo-1491147334573-44cbb4602074?w=400&q=80", stages: ["p4_s1.png", "p4_s2.png", "p4_s3.png"] }
         ];
 
-        // 2. 🛡️ 修復防呆機制：安全讀取 localStorage
-        let playerProgress;
+        // 初始化存檔
+        let playerProgress = { currentActiveId: 0, counts: {} };
         try {
-            const rawData = localStorage.getItem('pixel_garden_save');
-            playerProgress = rawData ? JSON.parse(rawData) : null;
-            // 檢查資料結構是否完整，若破損則重置
-            if (!playerProgress || typeof playerProgress.currentActiveId !== 'number' || !playerProgress.counts) {
-                throw new Error("Data corrupted");
-            }
-        } catch (e) {
-            playerProgress = { currentActiveId: 0, counts: { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 } };
-        }
+            const raw = localStorage.getItem('pixel_garden_v2');
+            if(raw) playerProgress = JSON.parse(raw);
+        } catch(e) {}
 
         let timeLeft = 1500;
         let timerId = null;
         let isTimerRunning = false;
 
+        // 取得當前生長階段的邏輯
+        function getPlantStageInfo(count, target, stagesArray) {
+            if (count === 0) return { name: "幼苗期", class: "stage-seed", img: stagesArray[0], fallback: svgSeed };
+            if (count >= target) return { name: "開花期", class: "stage-bloom", img: stagesArray[2], fallback: svgBloom };
+            return { name: "生長期", class: "stage-grow", img: stagesArray[1], fallback: svgGrow };
+        }
+
+        // 渲染圖鑑網格
         function renderCatalog() {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
 
             plantDatabase.forEach(plant => {
-                const currentCount = playerProgress.counts[plant.id] || 0;
-                const isUnlocked = currentCount >= plant.target;
-                const percent = Math.min((currentCount / plant.target) * 100, 100);
+                const count = playerProgress.counts[plant.id] || 0;
+                const percent = Math.min((count / plant.target) * 100, 100);
+                const stage = getPlantStageInfo(count, plant.target, plant.stages);
                 
-                // 決定圖片樣式：未解鎖套用 silhouette (黑影) 類別
-                const imgClass = isUnlocked ? "pixel-sprite" : "pixel-sprite locked-silhouette";
-
                 const card = document.createElement('div');
-                card.className = `plant-card`;
-                // 若圖片載入失敗，會顯示 alt 文字 (為避免測試時沒圖難看，加入了預設錯誤處理)
+                card.className = 'plant-card';
+                // 實作圖片失敗時的 fallback
                 card.innerHTML = `
-                    <div style="font-size:11px; color:var(--text-muted);">目標: ${plant.target} 次</div>
-                    <img src="${plant.image}" class="${imgClass}" alt="[圖片缺失]" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 10 10\\'><rect width=\\'10\\' height=\\'10\\' fill=\\'%234b5563\\'/></svg>'">
-                    <h4 style="font-size:16px; font-weight:600; margin-bottom:2px;">${plant.name}</h4>
-                    <div style="font-size:12px; color:var(--text-muted); font-style:italic;">${plant.id === playerProgress.currentActiveId ? '● 當前培育中' : '&nbsp;'}</div>
+                    <div class="stage-badge ${stage.class}">${stage.name}</div>
+                    <img src="${stage.img}" class="pixel-sprite" onerror="this.onerror=null; this.src='${stage.fallback}'">
+                    <h4 style="font-size:18px; font-weight:600; margin-bottom:4px;">${plant.name}</h4>
+                    <div style="font-size:12px; color:var(--text-muted);">${plant.id === playerProgress.currentActiveId ? '🟢 培育中' : '&nbsp;'}</div>
                     <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${percent}%"></div></div>
-                    <div style="font-size:11px; text-align:right; margin-top:4px; color:var(--text-muted);">${currentCount}/${plant.target}</div>
+                    <div style="font-size:12px; text-align:right; margin-top:8px; color:var(--text-muted);">進度: ${count}/${plant.target}</div>
                 `;
 
                 card.onclick = () => {
@@ -204,43 +195,51 @@
                     saveData();
                     switchView('focus');
                     loadActivePlantDetails();
-                    renderCatalog(); // 更新「當前培育中」標示
+                    renderCatalog();
                 };
                 grid.appendChild(card);
             });
         }
 
+        // 載入專注艙細節
         function loadActivePlantDetails() {
             const plant = plantDatabase[playerProgress.currentActiveId];
-            const currentCount = playerProgress.counts[plant.id] || 0;
-            const isUnlocked = currentCount >= plant.target;
+            const count = playerProgress.counts[plant.id] || 0;
+            const stage = getPlantStageInfo(count, plant.target, plant.stages);
+            const isUnlocked = count >= plant.target;
 
-            document.getElementById('activePlantLabel').textContent = `當前培育：${plant.name}`;
+            // 專注區更新
+            document.getElementById('focusTargetLabel').textContent = `目標解鎖：${plant.target} 次`;
+            const badge = document.getElementById('focusStageBadge');
+            badge.className = `stage-badge ${stage.class}`;
+            badge.textContent = stage.name;
+            
+            const activeImg = document.getElementById('activePlantImage');
+            activeImg.src = stage.img;
+            activeImg.onerror = () => { activeImg.src = stage.fallback; };
+
+            // 百科區更新
             document.getElementById('epName').textContent = plant.name;
             document.getElementById('epSci').textContent = plant.sci;
             document.getElementById('epFamily').textContent = plant.family;
-            document.getElementById('epOrigin').textContent = plant.origin;
-            document.getElementById('epStatCount').textContent = `${currentCount} 次`;
-            document.getElementById('epStatTarget').textContent = `${plant.target} 次`;
+            document.getElementById('epStatCount').textContent = `${count} 次`;
+            document.getElementById('epCare').textContent = plant.care;
+            
+            const epPhoto = document.getElementById('epRealPhoto');
+            // 如果還沒解鎖，真實照片變黑白且模糊
+            epPhoto.src = plant.photo;
+            epPhoto.style.filter = isUnlocked ? "none" : "grayscale(100%) blur(2px)";
 
-            const activeImg = document.getElementById('activePlantImage');
-            activeImg.src = plant.image;
-            activeImg.className = isUnlocked ? "focus-pixel-display" : "focus-pixel-display locked-silhouette";
-
-            const wrapper = document.getElementById('focusSplitWrapper');
             if (isUnlocked) {
-                wrapper.classList.add('unlocked-state');
-                document.getElementById('epStatus').textContent = "已完全解鎖";
                 document.getElementById('epTrivia').style.color = "var(--text-main)";
-                document.getElementById('epTrivia').innerHTML = `• ${plant.trivia}`;
+                document.getElementById('epTrivia').innerHTML = `✨ <strong>解鎖知識：</strong><br>${plant.trivia}`;
             } else {
-                wrapper.classList.remove('unlocked-state');
-                document.getElementById('epStatus').textContent = `培育中 (${currentCount}/${plant.target})`;
                 document.getElementById('epTrivia').style.color = "var(--text-muted)";
-                document.getElementById('epTrivia').textContent = "🔒 鎖定中，完成所需專注次數後將自動解鎖完整科普知識。";
+                document.getElementById('epTrivia').textContent = `🔒 完成 ${plant.target} 次培育後，將解鎖植物的真實樣貌與專屬知識。`;
             }
         }
 
+        // --- 以下為計時器與控制邏輯 ---
         function updateTimerDisplay() {
             let m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
             let s = String(timeLeft % 60).padStart(2, '0');
@@ -256,33 +255,41 @@
         }
 
         document.getElementById('timerActionBtn').onclick = () => {
+            const btn = document.getElementById('timerActionBtn');
             if (isTimerRunning) {
                 clearInterval(timerId);
                 isTimerRunning = false;
-                document.getElementById('timerActionBtn').textContent = "START";
+                btn.textContent = "繼續培育";
+                btn.classList.remove('running');
             } else {
                 isTimerRunning = true;
-                document.getElementById('timerActionBtn').textContent = "PAUSE";
+                btn.textContent = "暫停專注";
+                btn.classList.add('running');
+                
+                // 如果目前是幼苗(進度0)，一按下開始就先讓它變成"生長期"，更有回饋感
+                const plant = plantDatabase[playerProgress.currentActiveId];
+                if((playerProgress.counts[plant.id] || 0) === 0) {
+                    const activeImg = document.getElementById('activePlantImage');
+                    activeImg.src = plant.stages[1]; 
+                    activeImg.onerror = () => { activeImg.src = svgGrow; };
+                    document.getElementById('focusStageBadge').textContent = "生長中...";
+                    document.getElementById('focusStageBadge').className = "stage-badge stage-grow";
+                }
+
                 timerId = setInterval(() => {
                     timeLeft--;
                     updateTimerDisplay();
                     if (timeLeft <= 0) {
                         clearInterval(timerId);
                         isTimerRunning = false;
-                        document.getElementById('timerActionBtn').textContent = "START";
+                        btn.textContent = "開始培育";
+                        btn.classList.remove('running');
                         timeLeft = 1500;
                         executeSessionIncrement();
                         updateTimerDisplay();
+                        alert("🎉 專注完成！植物獲得了成長！");
                     }
                 }, 1000);
-            }
-        };
-
-        document.getElementById('quickCheatBtn').onclick = executeSessionIncrement;
-        document.getElementById('clearDataBtn').onclick = () => {
-            if(confirm("確定要清除所有進度嗎？")) {
-                localStorage.removeItem('pixel_garden_save');
-                location.reload();
             }
         };
 
@@ -300,8 +307,12 @@
 
         document.getElementById('navToCatalog').onclick = () => switchView('catalog');
         document.getElementById('navToFocus').onclick = () => switchView('focus');
+        document.getElementById('quickCheatBtn').onclick = executeSessionIncrement;
+        document.getElementById('clearDataBtn').onclick = () => {
+            if(confirm("確定要清除所有進度嗎？")) { localStorage.removeItem('pixel_garden_v2'); location.reload(); }
+        };
 
-        function saveData() { localStorage.setItem('pixel_garden_save', JSON.stringify(playerProgress)); }
+        function saveData() { localStorage.setItem('pixel_garden_v2', JSON.stringify(playerProgress)); }
 
         renderCatalog();
         loadActivePlantDetails();
